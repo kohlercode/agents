@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" product-name="agents">
+        <header/>
+        <body>
+            <trans-unit id="tx_agents_domain_model_chat">
+                <source>Agent Chat</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_chat.title">
+                <source>Title</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_chat.provider_uid">
+                <source>Provider</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_chat.model_identifier">
+                <source>Model identifier</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_chat.created_by_be_user">
+                <source>Created by backend user</source>
+            </trans-unit>
+
+            <trans-unit id="tx_agents_domain_model_message">
+                <source>Agent Message</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_message.chat_uid">
+                <source>Chat</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_message.role">
+                <source>Role</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_message.content">
+                <source>Content</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_message.token_usage">
+                <source>Token usage</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_message.finish_reason">
+                <source>Finish reason</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_message.tool_calls_json">
+                <source>Tool calls JSON</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_message.response_meta_json">
+                <source>Response meta JSON</source>
+            </trans-unit>
+
+            <trans-unit id="tx_agents_domain_model_provider">
+                <source>Agent Provider</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_provider.title">
+                <source>Title</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_provider.provider_key">
+                <source>Provider key</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_provider.api_base_url">
+                <source>API base URL</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_provider.api_key_ref">
+                <source>API key reference</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_provider.model_identifier">
+                <source>Model identifier</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_provider.configuration_json">
+                <source>Configuration JSON</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_provider.is_active">
+                <source>Active</source>
+            </trans-unit>
+
+            <trans-unit id="tx_agents_domain_model_setting">
+                <source>Agent Setting</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_setting.system_prompt">
+                <source>System prompt</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_setting.active_provider_uid">
+                <source>Active provider</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_setting.feature_flags_json">
+                <source>Feature flags JSON</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

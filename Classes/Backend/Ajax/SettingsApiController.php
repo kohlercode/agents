@@ -1,0 +1,83 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Kohlercode\Agents\Backend\Ajax;
+
+use Kohlercode\Agents\Service\SettingsService;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Backend\Attribute\AsController;
+
+#[AsController]
+final readonly class SettingsApiController extends AbstractApiController
+{
+    public function __construct(
+        private SettingsService $settingsService,
+    ) {}
+
+    public function getSettings(ServerRequestInterface $request): ResponseInterface
+    {
+        return $this->success([
+            'settings' => $this->settingsService->getSettings(),
+        ]);
+    }
+
+    public function saveSettings(ServerRequestInterface $request): ResponseInterface
+    {
+        $payload = $this->readJsonBody($request);
+        $systemPrompt = (string)($payload['systemPrompt'] ?? '');
+        $activeProviderUid = (int)($payload['activeProviderUid'] ?? 0);
+        $this->settingsService->saveSettings($systemPrompt, $activeProviderUid);
+
+        return $this->success();
+    }
+
+    public function listProviders(ServerRequestInterface $request): ResponseInterface
+    {
+        return $this->success([
+            'providers' => $this->settingsService->listProviders(),
+        ]);
+    }
+
+    public function saveProvider(ServerRequestInterface $request): ResponseInterface
+    {
+        $backendUserId = $this->resolveBackendUserId();
+        $payload = $this->readJsonBody($request);
+        $providerData = [
+            'uid' => (int)($payload['uid'] ?? 0),
+            'cruser_id' => $backendUserId,
+            'title' => (string)($payload['title'] ?? ''),
+            'provider_key' => (string)($payload['providerKey'] ?? ''),
+            'api_base_url' => (string)($payload['apiBaseUrl'] ?? ''),
+            'api_key_ref' => (string)($payload['apiKeyRef'] ?? ''),
+            'model_identifier' => (string)($payload['modelIdentifier'] ?? ''),
+            'configuration_json' => (string)($payload['configurationJson'] ?? '{}'),
+            'is_active' => (int)($payload['isActive'] ?? 0),
+        ];
+        if ($providerData['title'] === '' || $providerData['provider_key'] === '') {
+            return $this->error('Missing required fields "title" and "providerKey".');
+        }
+
+        try {
+            $providerUid = $this->settingsService->saveProvider($providerData);
+        } catch (\Throwable $exception) {
+            return $this->error($exception->getMessage());
+        }
+        return $this->success([
+            'providerUid' => $providerUid,
+        ]);
+    }
+
+    public function activateProvider(ServerRequestInterface $request): ResponseInterface
+    {
+        $payload = $this->readJsonBody($request);
+        $providerUid = (int)($payload['providerUid'] ?? 0);
+        if ($providerUid <= 0) {
+            return $this->error('Missing required field "providerUid".');
+        }
+
+        $this->settingsService->activateProvider($providerUid);
+        return $this->success();
+    }
+}

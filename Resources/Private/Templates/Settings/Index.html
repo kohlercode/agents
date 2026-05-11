@@ -1,0 +1,42 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+<f:layout name="Module" />
+
+<f:section name="Content">
+    <div class="agents-settings-module"
+         id="agents-settings-module"
+         data-route-get-settings="{ajaxRoutes.getSettings}"
+         data-route-save-settings="{ajaxRoutes.saveSettings}"
+         data-route-list-providers="{ajaxRoutes.listProviders}"
+         data-route-save-provider="{ajaxRoutes.saveProvider}"
+         data-route-activate-provider="{ajaxRoutes.activateProvider}">
+        <h1><f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.title" /></h1>
+        <div class="row g-3">
+            <div class="col-12 col-xl-6">
+                <div class="card">
+                    <div class="card-header">
+                        <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.systemPrompt" />
+                    </div>
+                    <div class="card-body">
+                        <textarea id="agents-system-prompt" class="form-control" rows="8"></textarea>
+                        <button id="agents-save-settings" type="button" class="btn btn-primary mt-3">Save settings</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-xl-6">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.providers" /></span>
+                        <button id="agents-new-provider" class="btn btn-sm btn-primary" type="button">New provider</button>
+                    </div>
+                    <div class="card-body">
+                        <div id="agents-provider-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="{f:uri.resource(path: 'JavaScript/Modules/agents-settings.js', extensionName: 'Agents')}"></script>
+</f:section>
+</html>

@@ -1,0 +1,36 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Kohlercode\Agents\:
+    resource: '../Classes/*'
+
+  Kohlercode\Agents\Llm\Provider\:
+    resource: '../Classes/Llm/Provider/*'
+    tags: ['agents.llm_provider']
+
+  Kohlercode\Agents\Tool\Implementation\:
+    resource: '../Classes/Tool/Implementation/*'
+    tags: ['agents.tool']
+
+  Kohlercode\Agents\Llm\ProviderRegistry:
+    arguments:
+      $providers: !tagged_iterator agents.llm_provider
+
+  Kohlercode\Agents\Tool\ToolRegistry:
+    arguments:
+      $tools: !tagged_iterator agents.tool
+
+  Kohlercode\Agents\Controller\ChatModuleController:
+    public: true
+
+  Kohlercode\Agents\Controller\SettingsModuleController:
+    public: true
+
+  Kohlercode\Agents\Backend\Ajax\ChatApiController:
+    public: true
+
+  Kohlercode\Agents\Backend\Ajax\SettingsApiController:
+    public: true

@@ -1,0 +1,75 @@
+CREATE TABLE tx_agents_domain_model_chat (
+    uid INT AUTO_INCREMENT NOT NULL,
+    pid INT DEFAULT 0 NOT NULL,
+    tstamp INT DEFAULT 0 NOT NULL,
+    crdate INT DEFAULT 0 NOT NULL,
+    cruser_id INT DEFAULT 0 NOT NULL,
+    deleted SMALLINT DEFAULT 0 NOT NULL,
+    hidden SMALLINT DEFAULT 0 NOT NULL,
+    title VARCHAR(255) DEFAULT '' NOT NULL,
+    provider_uid INT DEFAULT 0 NOT NULL,
+    model_identifier VARCHAR(255) DEFAULT '' NOT NULL,
+    created_by_be_user INT DEFAULT 0 NOT NULL,
+    PRIMARY KEY (uid),
+    KEY parent (pid),
+    KEY provider (provider_uid),
+    KEY creator (created_by_be_user)
+);
+
+CREATE TABLE tx_agents_domain_model_message (
+    uid INT AUTO_INCREMENT NOT NULL,
+    pid INT DEFAULT 0 NOT NULL,
+    tstamp INT DEFAULT 0 NOT NULL,
+    crdate INT DEFAULT 0 NOT NULL,
+    cruser_id INT DEFAULT 0 NOT NULL,
+    deleted SMALLINT DEFAULT 0 NOT NULL,
+    hidden SMALLINT DEFAULT 0 NOT NULL,
+    chat_uid INT DEFAULT 0 NOT NULL,
+    role VARCHAR(32) DEFAULT '' NOT NULL,
+    content TEXT,
+    token_usage INT DEFAULT 0 NOT NULL,
+    finish_reason VARCHAR(64) DEFAULT '' NOT NULL,
+    tool_calls_json TEXT,
+    response_meta_json TEXT,
+    PRIMARY KEY (uid),
+    KEY parent (pid),
+    KEY chat (chat_uid),
+    KEY role (role)
+);
+
+CREATE TABLE tx_agents_domain_model_provider (
+    uid INT AUTO_INCREMENT NOT NULL,
+    pid INT DEFAULT 0 NOT NULL,
+    tstamp INT DEFAULT 0 NOT NULL,
+    crdate INT DEFAULT 0 NOT NULL,
+    cruser_id INT DEFAULT 0 NOT NULL,
+    deleted SMALLINT DEFAULT 0 NOT NULL,
+    hidden SMALLINT DEFAULT 0 NOT NULL,
+    title VARCHAR(255) DEFAULT '' NOT NULL,
+    provider_key VARCHAR(32) DEFAULT '' NOT NULL,
+    api_base_url VARCHAR(255) DEFAULT '' NOT NULL,
+    api_key_ref VARCHAR(255) DEFAULT '' NOT NULL,
+    model_identifier VARCHAR(255) DEFAULT '' NOT NULL,
+    configuration_json TEXT,
+    is_active SMALLINT DEFAULT 0 NOT NULL,
+    PRIMARY KEY (uid),
+    KEY parent (pid),
+    KEY provider_key (provider_key),
+    KEY is_active (is_active)
+);
+
+CREATE TABLE tx_agents_domain_model_setting (
+    uid INT AUTO_INCREMENT NOT NULL,
+    pid INT DEFAULT 0 NOT NULL,
+    tstamp INT DEFAULT 0 NOT NULL,
+    crdate INT DEFAULT 0 NOT NULL,
+    cruser_id INT DEFAULT 0 NOT NULL,
+    deleted SMALLINT DEFAULT 0 NOT NULL,
+    hidden SMALLINT DEFAULT 0 NOT NULL,
+    system_prompt TEXT,
+    active_provider_uid INT DEFAULT 0 NOT NULL,
+    feature_flags_json TEXT,
+    PRIMARY KEY (uid),
+    KEY parent (pid),
+    KEY active_provider (active_provider_uid)
+);
