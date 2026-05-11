@@ -12,6 +12,18 @@
             <trans-unit id="chat.placeholder">
                 <source>Ask something...</source>
             </trans-unit>
+            <trans-unit id="chat.send">
+                <source>Send</source>
+            </trans-unit>
+            <trans-unit id="chat.thread_heading">
+                <source>Conversation</source>
+            </trans-unit>
+            <trans-unit id="chat.select_chat">
+                <source>Select a chat</source>
+            </trans-unit>
+            <trans-unit id="chat.empty_hint">
+                <source>No messages yet. Type below to start the conversation.</source>
+            </trans-unit>
             <trans-unit id="settings.title">
                 <source>Agents Settings</source>
             </trans-unit>

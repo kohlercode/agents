@@ -1,0 +1,30 @@
+// Theme-aware tokens: prefer TYPO3 backend CSS variables (light / dark / themes),
+// with conservative fallbacks when variables are unavailable.
+
+@mixin agents-chat-tokens {
+    // Surfaces
+    --agents-surface-elevated: var(--typo3-surface-container-low, #f8f9fa);
+    --agents-surface-muted: var(--typo3-surface-dim, #e9ecef);
+    --agents-surface-message: var(--typo3-surface-container-base, #fff);
+    --agents-surface-user: var(--typo3-surface-primary, #0d6efd);
+    --agents-surface-user-text: var(--typo3-surface-primary-text, #fff);
+    --agents-surface-system: var(--typo3-surface-container-lowest, #f1f3f5);
+
+    // Text
+    --agents-text-primary: var(--typo3-text-color-default, #212529);
+    --agents-text-muted: var(--typo3-text-color-secondary, #6c757d);
+    --agents-text-on-user: var(--agents-surface-user-text);
+
+    // Borders & chrome
+    --agents-border-subtle: var(--typo3-state-default-border-color, rgba(0, 0, 0, 0.12));
+
+    // Focus ring (align with backend interaction)
+    --agents-focus-ring: var(--typo3-form-element-border-color-focus, #0d6efd);
+
+    // Composer
+    --agents-composer-bg: var(--typo3-form-element-background-color, var(--typo3-surface-bright, #fff));
+    --agents-composer-border: var(--typo3-form-element-border-color, var(--agents-border-subtle));
+
+    // Shadows (very light; backend often uses flat surfaces)
+    --agents-shadow-sm: 0 1px 2px color-mix(in srgb, var(--agents-text-primary) 6%, transparent);
+}

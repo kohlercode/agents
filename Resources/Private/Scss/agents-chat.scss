@@ -1,0 +1,271 @@
+@use 'agents-chat-tokens' as tokens;
+
+// -----------------------------------------------------------------------------
+// Agents backend chat — Bootstrap-friendly, TYPO3 theme token aware
+// -----------------------------------------------------------------------------
+
+.agents-chat-module {
+    @include tokens.agents-chat-tokens;
+
+    max-width: 1400px;
+    margin-inline: auto;
+}
+
+.agents-chat-layout {
+    align-items: stretch;
+}
+
+// --- Panels (cards that respect backend surfaces) ----------------------------
+
+.agents-chat-panel {
+    background-color: var(--agents-surface-message);
+    border: 1px solid var(--agents-border-subtle) !important;
+    border-radius: 0.5rem;
+    box-shadow: var(--agents-shadow-sm);
+    overflow: hidden;
+    min-height: 22rem;
+}
+
+.agents-chat-panel--thread {
+    min-height: 28rem;
+}
+
+@media (min-width: 992px) {
+    .agents-chat-panel--thread {
+        min-height: min(70vh, 44rem);
+    }
+}
+
+// --- Sidebar ---------------------------------------------------------------
+
+.agents-chat-sidebar__toolbar {
+    background-color: var(--agents-surface-elevated);
+    border-bottom: 1px solid var(--agents-border-subtle);
+    padding-block: 0.75rem;
+    padding-inline: 1rem;
+}
+
+.agents-chat-sidebar__toolbar-title {
+    color: var(--agents-text-primary);
+    letter-spacing: -0.02em;
+}
+
+.agents-chat-sidebar__body {
+    max-height: min(55vh, 26rem);
+    overflow-y: auto;
+
+    @media (min-width: 992px) {
+        max-height: none;
+        flex: 1 1 auto;
+        min-height: 0;
+    }
+}
+
+.agents-chat-sidebar .agents-chat-panel {
+    display: flex;
+    flex-direction: column;
+
+    @media (min-width: 992px) {
+        height: 100%;
+        min-height: 28rem;
+    }
+}
+
+.agents-chat-thread-list {
+    background-color: var(--agents-surface-message);
+}
+
+.agents-chat-thread-item {
+    border-color: var(--agents-border-subtle) !important;
+    color: var(--agents-text-primary);
+    padding-block: 0.65rem;
+    padding-inline: 1rem;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease;
+    text-align: left;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    border-inline: none !important;
+
+    &:hover,
+    &:focus-visible {
+        background-color: var(--typo3-state-default-hover-bg, var(--agents-surface-elevated));
+        color: var(--agents-text-primary);
+    }
+
+    &.active {
+        background-color: color-mix(in srgb, var(--typo3-surface-primary, #0d6efd) 14%, transparent);
+        color: var(--agents-text-primary);
+        border-inline-start: 3px solid var(--typo3-surface-primary, #0d6efd) !important;
+        padding-inline-start: calc(1rem - 2px);
+    }
+}
+
+// --- Thread (messages + composer) ------------------------------------------
+
+.agents-chat-thread {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0; // allow nested scroll region in flex column
+}
+
+.agents-chat-thread__header {
+    flex: 0 0 auto;
+    padding-block: 0.75rem;
+    padding-inline: 1rem;
+    border-bottom: 1px solid var(--agents-border-subtle);
+    background-color: var(--agents-surface-elevated);
+}
+
+.agents-chat-thread__header-label {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--agents-text-muted);
+    margin-bottom: 0.125rem;
+}
+
+.agents-chat-thread__header-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--agents-text-primary);
+    margin: 0;
+    line-height: 1.35;
+}
+
+.agents-chat-thread__messages {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    padding: 1rem 1.125rem;
+    background: linear-gradient(
+        180deg,
+        var(--agents-surface-muted) 0%,
+        color-mix(in srgb, var(--agents-surface-muted) 35%, var(--agents-surface-message)) 100%
+    );
+
+    &:empty::before {
+        content: attr(data-empty-hint);
+        display: block;
+        text-align: center;
+        color: var(--agents-text-muted);
+        font-size: 0.9375rem;
+        padding: 3rem 1.5rem;
+        line-height: 1.5;
+    }
+}
+
+.agents-chat-thread__composer {
+    flex: 0 0 auto;
+    background-color: var(--agents-surface-elevated);
+    border-top: 1px solid var(--agents-border-subtle);
+    padding: 1rem;
+}
+
+// --- Message bubbles ---------------------------------------------------------
+
+.agents-chat-message {
+    display: flex;
+    margin-bottom: 0.75rem;
+
+    &--user {
+        justify-content: flex-end;
+    }
+
+    &--assistant,
+    &--system,
+    &--tool {
+        justify-content: flex-start;
+    }
+}
+
+.agents-chat-message__bubble {
+    max-width: min(100%, 42rem);
+    border-radius: 0.75rem;
+    padding: 0.625rem 0.875rem;
+    box-shadow: var(--agents-shadow-sm);
+    border: 1px solid var(--agents-border-subtle);
+    background-color: var(--agents-surface-message);
+    color: var(--agents-text-primary);
+}
+
+.agents-chat-message--user .agents-chat-message__bubble {
+    background-color: var(--agents-surface-user);
+    color: var(--agents-text-on-user);
+    border-color: color-mix(in srgb, var(--agents-surface-user) 55%, var(--agents-text-primary));
+    border-bottom-right-radius: 0.25rem;
+}
+
+.agents-chat-message--assistant .agents-chat-message__bubble {
+    border-bottom-left-radius: 0.25rem;
+}
+
+.agents-chat-message--system .agents-chat-message__bubble,
+.agents-chat-message--tool .agents-chat-message__bubble {
+    background-color: var(--agents-surface-system);
+    font-size: 0.875rem;
+    border-style: dashed;
+}
+
+.agents-chat-message__role {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--agents-text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.agents-chat-message--user .agents-chat-message__role {
+    color: color-mix(in srgb, var(--agents-text-on-user) 75%, transparent);
+}
+
+.agents-chat-message__text {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+// --- Composer form -----------------------------------------------------------
+
+.agents-chat-composer-form .input-group {
+    box-shadow: var(--agents-shadow-sm);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 1px solid var(--agents-composer-border);
+    background-color: var(--agents-composer-bg);
+}
+
+.agents-chat-composer-form .form-control {
+    border: 0;
+    background-color: transparent;
+    color: var(--agents-text-primary);
+    padding-block: 0.65rem;
+    padding-inline: 1rem;
+    min-height: 2.75rem;
+
+    &::placeholder {
+        color: var(--agents-text-muted);
+    }
+
+    &:focus {
+        box-shadow: none;
+        outline: 0;
+    }
+}
+
+.agents-chat-composer-form .input-group:focus-within {
+    outline: 2px solid var(--agents-focus-ring);
+    outline-offset: 1px;
+}
+
+.agents-chat-composer-form .btn {
+    border-radius: 0;
+    padding-inline: 1.25rem;
+    font-weight: 600;
+}
