@@ -1,156 +1,66 @@
-<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-
-      data-namespace-typo3-fluid="true">
-
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
 <f:layout name="Module" />
-
-
-
 <f:section name="Content">
-
-    <f:asset.css
-
-        identifier="agents-chat-styles"
-
-        href="EXT:agents/Resources/Public/Css/agents-chat.css"
-
-    />
-
-
-
-    <f:asset.script
-
-        identifier="agents-chat-module"
-
-        src="EXT:agents/Resources/Public/JavaScript/Modules/agents-chat.js"
-
-        type="module"
-
-    />
-
-
-
+    <f:asset.css identifier="agents-chat-styles" href="EXT:agents/Resources/Public/Css/agents-chat.css" />
+    <f:asset.script identifier="agents-chat-module" src="EXT:agents/Resources/Public/JavaScript/Modules/agents-chat.js" type="module" />
     <div class="agents-chat-module"
-
          id="agents-chat-module"
-
          data-route-list-chats="{ajaxRoutes.listChats}"
-
          data-route-create-chat="{ajaxRoutes.createChat}"
-
          data-route-list-messages="{ajaxRoutes.listMessages}"
-
          data-route-send-message="{ajaxRoutes.sendMessage}"
-
          data-label-select-chat="{f:translate(key: 'LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.select_chat') -> f:format.htmlspecialchars()}">
-
         <div class="agents-chat-layout row g-3">
 
-            <aside class="agents-chat-sidebar col-12 col-lg-4">
-
-                <div class="agents-chat-panel agents-chat-panel--sidebar card border-0">
-
-                    <div class="agents-chat-sidebar__toolbar d-flex justify-content-between align-items-center gap-2">
-
-                        <h2 class="agents-chat-sidebar__toolbar-title h5 mb-0">
-
-                            <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.title" />
-
-                        </h2>
-
-                        <button id="agents-new-chat" type="button" class="btn btn-sm btn-primary">
-
-                            <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.new" />
-
-                        </button>
-
-                    </div>
-
-                    <div class="agents-chat-sidebar__body">
-
-                        <div class="list-group list-group-flush agents-chat-thread-list" id="agents-chat-list"></div>
-
-                    </div>
-
-                </div>
-
-            </aside>
-
-
-
             <section class="agents-chat-main col-12 col-lg-8">
-
                 <div class="agents-chat-panel agents-chat-panel--thread card border-0 d-flex flex-column">
-
-                        <div class="agents-chat-thread flex-grow-1 d-flex flex-column">
-
+                    <div class="agents-chat-thread flex-grow-1 d-flex flex-column">
                         <header class="agents-chat-thread__header">
-
                             <div class="agents-chat-thread__header-label">
-
                                 <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.thread_heading" />
-
                             </div>
-
                             <h3 class="agents-chat-thread__header-title" id="agents-chat-thread-title">
-
                                 <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.select_chat" />
-
                             </h3>
-
                         </header>
-
-
-
                         <div class="agents-chat-thread__messages border-0"
-
                              id="agents-message-list"
-
                              data-empty-hint="{f:translate(key: 'LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.empty_hint') -> f:format.htmlspecialchars()}">
-
                         </div>
-
-
-
                         <footer class="agents-chat-thread__composer card-footer border-0">
-
                             <form id="agents-chat-form" class="agents-chat-composer-form">
-
                                 <div class="input-group">
-
                                     <input id="agents-chat-input"
-
                                            class="form-control"
-
                                            type="text"
-
                                            autocomplete="off"
-
                                            placeholder="{f:translate(key: 'LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.placeholder')}" />
-
                                     <button class="btn btn-primary" type="submit">
-
                                         <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.send" />
-
                                     </button>
-
                                 </div>
-
                             </form>
-
                         </footer>
-
                     </div>
-
                 </div>
-
             </section>
-
+            
+            <aside class="agents-chat-sidebar col-12 col-lg-4">
+                <div class="agents-chat-panel agents-chat-panel--sidebar card border-0">
+                    <div class="agents-chat-sidebar__toolbar d-flex justify-content-between align-items-center gap-2">
+                        <h2 class="agents-chat-sidebar__toolbar-title h5 mb-0">
+                            <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.title" />
+                        </h2>
+                        <button id="agents-new-chat" type="button" class="btn btn-sm btn-primary">
+                            <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.new" />
+                        </button>
+                    </div>
+                    <div class="agents-chat-sidebar__body">
+                        <div class="list-group list-group-flush agents-chat-thread-list" id="agents-chat-list"></div>
+                    </div>
+                </div>
+            </aside>
         </div>
-
     </div>
-
 </f:section>
-
 </html>
-

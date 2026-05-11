@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kohlercode\Agents\Service;
 
+use Kohlercode\Agents\Llm\JsonSchemaForLlm;
 use Kohlercode\Agents\Llm\LlmProviderRequest;
 use Kohlercode\Agents\Llm\ProviderRegistry;
 use Kohlercode\Agents\Repository\ChatRepository;
@@ -88,10 +89,11 @@ final readonly class ChatService
         }
 
         $providerClient = $this->providerRegistry->resolve((string)$provider['provider_key']);
+        $toolDefinitions = JsonSchemaForLlm::relaxToolParameterSchemas($this->toolRegistry->asLlmToolDefinitions());
         $response = $providerClient->complete(
             new LlmProviderRequest(
                 $llmMessages,
-                $this->toolRegistry->asLlmToolDefinitions(),
+                $toolDefinitions,
                 (string)($chat['model_identifier'] ?: $provider['model_identifier']),
             ),
             $provider
@@ -99,8 +101,12 @@ final readonly class ChatService
 
         $toolResults = $this->executeToolCalls($response->toolCalls, $backendUserId);
         $assistantText = $response->content;
+        if (trim($assistantText) === '' && $response->finishReason === 'MALFORMED_FUNCTION_CALL') {
+            $assistantText = 'The model attempted to call a tool but returned an invalid tool payload (MALFORMED_FUNCTION_CALL). '
+                . 'This often happens with strict JSON Schema or large arguments; try again with a shorter request or a different model.';
+        }
         if ($toolResults !== []) {
-            $assistantText .= "\n\nTool results:\n" . (string)json_encode($toolResults, JSON_PRETTY_PRINT);
+            $assistantText .= "\n\n" . $this->buildToolSummaryText($toolResults);
         }
 
         $this->messageRepository->addMessage(
@@ -191,5 +197,73 @@ final readonly class ChatService
             }
         }
         return $results;
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $toolResults
+     */
+    private function buildToolSummaryText(array $toolResults): string
+    {
+        $lines = [];
+        foreach ($toolResults as $toolResult) {
+            $toolName = (string)($toolResult['tool'] ?? '');
+            if ($toolName === '') {
+                continue;
+            }
+
+            if (array_key_exists('error', $toolResult)) {
+                $lines[] = sprintf(
+                    'Tool "%s" failed: %s',
+                    $toolName,
+                    (string)$toolResult['error']
+                );
+                continue;
+            }
+
+            $result = $toolResult['result'] ?? null;
+            if ($toolName === 'create_page' && is_array($result)) {
+                $createdPageUid = (int)($result['createdPageUid'] ?? 0);
+                $dryRun = (bool)($result['dryRun'] ?? false);
+                $title = trim((string)($result['title'] ?? ''));
+                $parentPid = (int)($result['parentPid'] ?? 0);
+
+                if ($dryRun) {
+                    $lines[] = sprintf(
+                        'Planned to create a page "%s" below page %d. No changes were made (dry run).',
+                        $title !== '' ? $title : '[no title]',
+                        $parentPid
+                    );
+                } elseif ($createdPageUid > 0) {
+                    $lines[] = sprintf(
+                        'Created page %d%s.',
+                        $createdPageUid,
+                        $title !== '' ? sprintf(' with title "%s"', $title) : ''
+                    );
+                } else {
+                    $lines[] = 'Page creation tool reported an unexpected result.';
+                }
+                continue;
+            }
+
+            if ($toolName === 'system_info' && is_array($result)) {
+                $typo3Version = (string)($result['typo3Version'] ?? '');
+                $siteCount = (int)($result['siteCount'] ?? 0);
+                $lines[] = sprintf(
+                    'TYPO3 %s with %d site%s configured.',
+                    $typo3Version !== '' ? $typo3Version : '[unknown version]',
+                    $siteCount,
+                    $siteCount === 1 ? '' : 's'
+                );
+                continue;
+            }
+
+            $lines[] = sprintf(
+                'Tool "%s" completed. Result: %s',
+                $toolName,
+                (string)json_encode($result, JSON_UNESCAPED_UNICODE)
+            );
+        }
+
+        return $lines === [] ? 'Tools executed, but no usable results were returned.' : implode("\n", $lines);
     }
 }
