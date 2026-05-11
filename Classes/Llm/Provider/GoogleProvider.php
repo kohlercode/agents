@@ -8,11 +8,13 @@ use Kohlercode\Agents\Llm\LlmHttpClient;
 use Kohlercode\Agents\Llm\LlmProviderInterface;
 use Kohlercode\Agents\Llm\LlmProviderRequest;
 use Kohlercode\Agents\Llm\LlmProviderResponse;
+use Kohlercode\Agents\Security\ApiKeyCipher;
 
 final readonly class GoogleProvider implements LlmProviderInterface
 {
     public function __construct(
         private LlmHttpClient $httpClient,
+        private ApiKeyCipher $apiKeyCipher,
     ) {}
 
     public function supports(string $providerKey): bool
@@ -27,7 +29,10 @@ final readonly class GoogleProvider implements LlmProviderInterface
             return new LlmProviderResponse('[Google API key missing]');
         }
 
-        $baseUrl = (string)($providerConfig['api_base_url'] ?? 'https://generativelanguage.googleapis.com/v1beta');
+        $baseUrl = trim((string)($providerConfig['api_base_url'] ?? ''));
+        if ($baseUrl === '') {
+            $baseUrl = 'https://generativelanguage.googleapis.com/v1beta';
+        }
         $parts = [];
         foreach ($request->messages as $message) {
             $parts[] = [
@@ -60,10 +65,16 @@ final readonly class GoogleProvider implements LlmProviderInterface
 
     private function resolveApiKey(array $providerConfig): string
     {
-        $envName = trim((string)($providerConfig['api_key_ref'] ?? ''));
-        if ($envName === '') {
+        $storedValue = trim((string)($providerConfig['api_key_ref'] ?? ''));
+        if ($storedValue === '') {
             return '';
         }
-        return (string)getenv($envName);
+
+        $decrypted = $this->apiKeyCipher->decrypt($storedValue);
+        if ($decrypted !== '') {
+            return $decrypted;
+        }
+
+        return '';
     }
 }

@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Attribute\AsController;
 
 #[AsController]
-final readonly class ChatApiController extends AbstractApiController
+final class ChatApiController extends AbstractApiController
 {
     public function __construct(
         private ChatService $chatService,
@@ -37,9 +37,7 @@ final readonly class ChatApiController extends AbstractApiController
 
         $payload = $this->readJsonBody($request);
         $title = trim((string)($payload['title'] ?? ''));
-        if ($title === '') {
-            return $this->error('Missing required field "title".');
-        }
+        $title = $title !== '' ? $title : 'New chat';
 
         $chatUid = $this->chatService->createChat($title, $backendUserId);
         return $this->success([

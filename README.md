@@ -2,15 +2,10 @@
 
 `agents` provides backend modules for AI chat and provider settings in TYPO3 14.3.
 
-## Environment variables
+## API key storage
 
-Provider API keys are resolved from env var names stored in provider records:
-
-- Google example: `AGENTS_GOOGLE_API_KEY`
-- DeepSeek example: `AGENTS_DEEPSEEK_API_KEY`
-- OpenRouter example: `AGENTS_OPENROUTER_API_KEY`
-
-The value stored in `api_key_ref` must be the env var name, not the secret value.
+Provider API keys are stored encrypted in the provider record (`api_key_ref` column).
+Encryption uses TYPO3's system encryption key (`$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']`) as the basis for key derivation.
 
 ## Security defaults
 

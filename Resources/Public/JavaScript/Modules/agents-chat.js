@@ -17,15 +17,25 @@ const getAjaxUrl = (routeName) => {
   return allUrls[routeName] || '';
 };
 
-const apiGet = async (routeName, query = '') => {
-  const url = getAjaxUrl(routeName);
-  const response = await fetch(`${url}${query}`, {
+const buildUrlWithQuery = (url, query = {}) => {
+  const finalUrl = new URL(url, window.location.origin);
+  Object.entries(query).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      finalUrl.searchParams.set(key, String(value));
+    }
+  });
+  return finalUrl.toString();
+};
+
+const apiGet = async (routeName, query = {}) => {
+  const url = buildUrlWithQuery(getAjaxUrl(routeName), query);
+  const response = await fetch(url, {
     credentials: 'same-origin',
   });
   return response.json();
 };
 
-const apiPost = async (routeName, payload) => {
+const apiPost = async (routeName, payload = {}) => {
   const url = getAjaxUrl(routeName);
   const response = await fetch(url, {
     method: 'POST',
@@ -86,7 +96,7 @@ const loadMessages = async () => {
   if (!activeChatId) {
     return;
   }
-  const result = await apiGet(root.dataset.routeListMessages, `?chatUid=${activeChatId}`);
+  const result = await apiGet(root.dataset.routeListMessages, { chatUid: activeChatId });
   if (result.success) {
     renderMessages(result.data.messages || []);
   }
@@ -107,7 +117,8 @@ newChatEl.addEventListener('click', async () => {
 
 formEl.addEventListener('submit', async (event) => {
   event.preventDefault();
-  if (!activeChatId) {
+  const chatUid = Number(activeChatId);
+  if (!chatUid) {
     return;
   }
 
@@ -116,10 +127,7 @@ formEl.addEventListener('submit', async (event) => {
     return;
   }
   inputEl.value = '';
-  await apiPost(root.dataset.routeSendMessage, {
-    chatUid: activeChatId,
-    message,
-  });
+  await apiPost(root.dataset.routeSendMessage, { chatUid, message });
   await loadMessages();
 });
 

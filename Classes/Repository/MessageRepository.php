@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kohlercode\Agents\Repository;
 
+use Doctrine\DBAL\ParameterType;
+
 final readonly class MessageRepository extends AbstractRepository
 {
     private const TABLE = 'tx_agents_domain_model_message';
@@ -19,7 +21,7 @@ final readonly class MessageRepository extends AbstractRepository
             ->select('*')
             ->from(self::TABLE)
             ->where(
-                $queryBuilder->expr()->eq('chat_uid', $queryBuilder->createNamedParameter($chatUid, \PDO::PARAM_INT))
+                $queryBuilder->expr()->eq('chat_uid', $queryBuilder->createNamedParameter($chatUid, ParameterType::INTEGER))
             )
             ->orderBy('crdate', 'ASC')
             ->executeQuery()

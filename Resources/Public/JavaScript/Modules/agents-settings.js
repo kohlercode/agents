@@ -97,13 +97,13 @@ newProviderEl.addEventListener('click', async () => {
   }
   const modelIdentifier = window.prompt('Default model identifier', '');
   const apiBaseUrl = window.prompt('API base URL (optional)', '');
-  const apiKeyRef = window.prompt('API key reference env name', '');
+  const apiKey = window.prompt('API key (stored encrypted)', '');
   await apiPost(root.dataset.routeSaveProvider, {
     title,
     providerKey,
     modelIdentifier,
     apiBaseUrl,
-    apiKeyRef,
+    apiKey,
   });
   await loadProviders();
 });

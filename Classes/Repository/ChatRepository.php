@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kohlercode\Agents\Repository;
 
+use Doctrine\DBAL\ParameterType;
+
 final readonly class ChatRepository extends AbstractRepository
 {
     private const TABLE = 'tx_agents_domain_model_chat';
@@ -20,7 +22,7 @@ final readonly class ChatRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'created_by_be_user',
-                    $queryBuilder->createNamedParameter($backendUserId, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($backendUserId, ParameterType::INTEGER)
                 )
             )
             ->orderBy('tstamp', 'DESC')
@@ -61,7 +63,7 @@ final readonly class ChatRepository extends AbstractRepository
             ->select('*')
             ->from(self::TABLE)
             ->where(
-                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($chatUid, \PDO::PARAM_INT))
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($chatUid, ParameterType::INTEGER))
             )
             ->setMaxResults(1)
             ->executeQuery()

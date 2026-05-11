@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Attribute\AsController;
 
 #[AsController]
-final readonly class SettingsApiController extends AbstractApiController
+final class SettingsApiController extends AbstractApiController
 {
     public function __construct(
         private SettingsService $settingsService,
@@ -50,7 +50,7 @@ final readonly class SettingsApiController extends AbstractApiController
             'title' => (string)($payload['title'] ?? ''),
             'provider_key' => (string)($payload['providerKey'] ?? ''),
             'api_base_url' => (string)($payload['apiBaseUrl'] ?? ''),
-            'api_key_ref' => (string)($payload['apiKeyRef'] ?? ''),
+            'api_key' => (string)($payload['apiKey'] ?? ''),
             'model_identifier' => (string)($payload['modelIdentifier'] ?? ''),
             'configuration_json' => (string)($payload['configurationJson'] ?? '{}'),
             'is_active' => (int)($payload['isActive'] ?? 0),

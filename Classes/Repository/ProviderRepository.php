@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kohlercode\Agents\Repository;
 
+use Doctrine\DBAL\ParameterType;
+
 final readonly class ProviderRepository extends AbstractRepository
 {
     private const TABLE = 'tx_agents_domain_model_provider';
@@ -33,7 +35,7 @@ final readonly class ProviderRepository extends AbstractRepository
             ->select('*')
             ->from(self::TABLE)
             ->where(
-                $queryBuilder->expr()->eq('is_active', $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT))
+                $queryBuilder->expr()->eq('is_active', $queryBuilder->createNamedParameter(1, ParameterType::INTEGER))
             )
             ->setMaxResults(1)
             ->executeQuery()
@@ -52,7 +54,7 @@ final readonly class ProviderRepository extends AbstractRepository
             ->select('*')
             ->from(self::TABLE)
             ->where(
-                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT))
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, ParameterType::INTEGER))
             )
             ->setMaxResults(1)
             ->executeQuery()

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" product-name="agents">
+        <header/>
+        <body>
+            <trans-unit id="mlang_tabs_tab">
+                <source>Agents</source>
+            </trans-unit>
+            <trans-unit id="mlang_labels_tabdescr">
+                <source>Agent chat and provider management modules.</source>
+            </trans-unit>
+            <trans-unit id="mlang_labels_tablabel">
+                <source>Agents</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

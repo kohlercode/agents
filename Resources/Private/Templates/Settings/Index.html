@@ -3,6 +3,12 @@
 <f:layout name="Module" />
 
 <f:section name="Content">
+    <f:asset.script
+        identifier="agents-settings-module"
+        src="EXT:agents/Resources/Public/JavaScript/Modules/agents-settings.js"
+        type="module"
+    />
+
     <div class="agents-settings-module"
          id="agents-settings-module"
          data-route-get-settings="{ajaxRoutes.getSettings}"
@@ -36,7 +42,5 @@
             </div>
         </div>
     </div>
-
-    <script type="module" src="{f:uri.resource(path: 'JavaScript/Modules/agents-settings.js', extensionName: 'Agents')}"></script>
 </f:section>
 </html>

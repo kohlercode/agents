@@ -6,6 +6,7 @@ namespace Kohlercode\Agents\Service;
 
 use Kohlercode\Agents\Repository\ProviderRepository;
 use Kohlercode\Agents\Repository\SettingRepository;
+use Kohlercode\Agents\Security\ApiKeyCipher;
 
 final readonly class SettingsService
 {
@@ -14,6 +15,7 @@ final readonly class SettingsService
     public function __construct(
         private SettingRepository $settingRepository,
         private ProviderRepository $providerRepository,
+        private ApiKeyCipher $apiKeyCipher,
     ) {}
 
     /**
@@ -37,7 +39,12 @@ final readonly class SettingsService
      */
     public function listProviders(): array
     {
-        return $this->providerRepository->listAll();
+        $providers = $this->providerRepository->listAll();
+        foreach ($providers as &$provider) {
+            $provider['has_api_key'] = trim((string)($provider['api_key_ref'] ?? '')) !== '';
+            unset($provider['api_key_ref']);
+        }
+        return $providers;
     }
 
     /**
@@ -49,6 +56,16 @@ final readonly class SettingsService
         if (!in_array($providerKey, self::ALLOWED_PROVIDER_KEYS, true)) {
             throw new \InvalidArgumentException('Unsupported provider key.');
         }
+
+        $incomingApiKey = trim((string)($providerData['api_key'] ?? ''));
+        if ($incomingApiKey !== '') {
+            $providerData['api_key_ref'] = $this->apiKeyCipher->encrypt($incomingApiKey);
+        } elseif ((int)($providerData['uid'] ?? 0) > 0) {
+            $existing = $this->providerRepository->getByUid((int)$providerData['uid']);
+            $providerData['api_key_ref'] = (string)($existing['api_key_ref'] ?? '');
+        }
+        unset($providerData['api_key']);
+
         return $this->providerRepository->save($providerData);
     }
 

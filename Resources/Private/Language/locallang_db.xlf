@@ -57,7 +57,7 @@
                 <source>API base URL</source>
             </trans-unit>
             <trans-unit id="tx_agents_domain_model_provider.api_key_ref">
-                <source>API key reference</source>
+                <source>Encrypted API key</source>
             </trans-unit>
             <trans-unit id="tx_agents_domain_model_provider.model_identifier">
                 <source>Model identifier</source>
