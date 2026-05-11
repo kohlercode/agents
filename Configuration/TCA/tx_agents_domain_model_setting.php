@@ -13,6 +13,9 @@ return [
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
+        'security' => [
+            'ignorePageTypeRestriction' => true,
+        ],
         'searchFields' => 'system_prompt',
         'iconfile' => 'EXT:agents/Resources/Public/Icons/module-agents-settings.svg',
     ],

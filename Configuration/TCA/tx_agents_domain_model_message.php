@@ -13,6 +13,9 @@ return [
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
+        'security' => [
+            'ignorePageTypeRestriction' => true,
+        ],
         'searchFields' => 'role,content',
         'iconfile' => 'EXT:agents/Resources/Public/Icons/module-agents-chat.svg',
     ],
