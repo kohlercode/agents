@@ -7,11 +7,10 @@ use Kohlercode\Agents\Controller\SettingsModuleController;
 
 return [
     'agents' => [
-        'parent' => 'admin',
-        'position' => ['after' => 'integrations'],
         'access' => 'admin',
         'workspaces' => 'live',
         'path' => '/module/agents',
+        'position' => ['after' => 'content'],
         'iconIdentifier' => 'module-agents-group',
         'labels' => 'LLL:EXT:agents/Resources/Private/Language/locallang_mod_agents.xlf',
         'appearance' => [
@@ -21,7 +20,7 @@ return [
     ],
     'agents_chat' => [
         'parent' => 'agents',
-        'access' => 'admin',
+        'access' => 'user',
         'workspaces' => 'live',
         'path' => '/module/agents/chat',
         'iconIdentifier' => 'module-agents-chat',
