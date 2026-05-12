@@ -2,6 +2,11 @@
 
 Short backend-focused extension that brings AI chat and provider configuration into TYPO3. Assistants can answer questions, draft content, and interact with the site through controlled tool calls.
 
+<p align="center">
+  <img src="Resources/Public/Screenshots/typo3_module_agents_chat.avif" width="45%" />
+  <img src="Resources/Public/Screenshots/typo3_module_agents_settings.avif" width="45%" />
+</p>
+
 ## Features
 
 - **Multiple LLM providers** — connect and switch between different providers from the backend.
