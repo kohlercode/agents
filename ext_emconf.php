@@ -2,10 +2,10 @@
 
 $EM_CONF[$_EXTKEY] = [
     'title' => 'Agents',
-    'description' => 'TYPO3 backend AI agents extension',
+    'description' => 'TYPO3 backend AI agents modules',
     'category' => 'module',
-    'author' => 'Kohler Code',
-    'author_email' => '',
+    'author' => 'Simon Kohler',
+    'author_email' => 'simon@kohlercode.com',
     'state' => 'alpha',
     'version' => '0.1.0',
     'constraints' => [
