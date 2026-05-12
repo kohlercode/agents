@@ -1,0 +1,45 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<form action="{action}" method="post">
+
+    <input type="hidden" name="uid" value="{provider.uid}" />
+
+    <div class="form-floating mb-3">
+        <label for="provider-title">Title</label>
+        <input type="text" class="form-control" id="provider-title" name="title" value="{provider.title}" required />
+    </div>
+
+    <div class="form-floating mb-3">
+        <label for="provider-provider-key">Provider key</label>
+        <select class="form-control" id="provider-provider-key" name="providerKey" required>
+            <option value="">-- Select provider key --</option>
+            <option value="google" {f:if(condition: '{provider.provider_key} == \'google\'', then: 'selected')}>Google</option>
+            <option value="deepseek" {f:if(condition: '{provider.provider_key} == \'deepseek\'', then: 'selected')}>DeepSeek</option>
+            <option value="openrouter" {f:if(condition: '{provider.provider_key} == \'openrouter\'', then: 'selected')}>OpenRouter</option>
+            <option value="openai" {f:if(condition: '{provider.provider_key} == \'openai\'', then: 'selected')}>OpenAI</option>
+            <option value="anthropic" {f:if(condition: '{provider.provider_key} == \'anthropic\'', then: 'selected')}>Anthropic</option>
+            <option value="azure" {f:if(condition: '{provider.provider_key} == \'azure\'', then: 'selected')}>Azure</option>
+        </select>
+    </div>
+
+    <div class="form-floating mb-3">
+        <label for="provider-api-key-ref">API key</label>
+        <input type="text" class="form-control" id="provider-api-key-ref" name="apiKeyRef" value="" placeholder="{f:if(condition: '{provider.api_key_ref} != \'\'', then: 'The API key is already stored. Enter new key to update.')}" />
+    </div>
+    
+    <div class="form-floating mb-3">
+        <label for="provider-model-identifier">Model identifier</label>
+        <input type="text" class="form-control" id="provider-model-identifier" name="modelIdentifier" value="{provider.model_identifier}" />
+    </div>
+
+    <div class="form-floating mb-3">
+        <label for="provider-api-base-url">API base URL (optional)</label>
+        <input type="text" class="form-control" id="provider-api-base-url" name="apiBaseUrl" value="{provider.api_base_url}" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Provider</button>
+
+</form>
+</html>

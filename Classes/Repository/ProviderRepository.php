@@ -102,4 +102,5 @@ final readonly class ProviderRepository extends AbstractRepository
         $connection->update(self::TABLE, ['is_active' => 0], ['is_active' => 1]);
         $connection->update(self::TABLE, ['is_active' => 1], ['uid' => $uid]);
     }
+
 }

@@ -1,4 +1,5 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
       data-namespace-typo3-fluid="true">
 <f:layout name="Module" />
 
@@ -21,20 +22,20 @@
             <div class="col-12 col-xl-6">
                 <div class="card">
                     <div class="card-body">
-                        <div class="form-floating mb-3">
-                            <label for="agents-system-prompt">
+                        <div class="form-floating mb-4">
+                            <label for="agents-system-prompt" class="h3 mb-3">
                                 <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.systemPrompt" />
                             </label>
-                            <textarea id="agents-system-prompt" class="form-control" rows="8"></textarea>
+                            <textarea id="agents-system-prompt" class="form-control" rows="12"></textarea>
                         </div>
-                        <div class="form-floating mb-3">
-                            <label for="agents-backend-module-position">
+                        <div class="form-floating mb-4">
+                            <label for="agents-backend-module-position" class="h4 mb-3">
                                 <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.backendModulePosition" />
                             </label>
                             <input id="agents-backend-module-position" class="form-control" type="text" placeholder="e.g. after:media" />
                         </div>
-                        <div class="form-floating">
-                            <label for="agents-pinned-chats-limit">
+                        <div class="form-floating mb-4">
+                            <label for="agents-pinned-chats-limit" class="h4 mb-3">
                                 <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.pinnedChatsLimit" />
                             </label>
                             <input id="agents-pinned-chats-limit"
@@ -57,11 +58,27 @@
             <div class="col-12 col-xl-6">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <span><f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.providers" /></span>
-                        <button id="agents-new-provider" class="btn btn-sm btn-primary" type="button">New provider</button>
+                        <h3><f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.providers" /></h3>
+                        <a href="{be:moduleLink(route: 'agents_settings.addProviderForm')}" class="btn btn-sm btn-primary">New provider</a>
                     </div>
                     <div class="card-body">
-                        <div id="agents-provider-list"></div>
+                        <div id="agents-provider-list">
+                            <f:for each="{providers}" as="provider">
+                                <div class="rounded p-2 mb-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <p class="fw-bold mb-0">{provider.title}</p>
+                                            <div class="text-muted">{provider.provider_key} / {provider.model_identifier}</div>
+                                        </div>
+                                        <div>   
+                                        <a href="{be:moduleLink(route: 'agents_settings.editProvider', arguments: {providerUid: provider.uid})}"
+                                           class="btn btn-sm btn-primary">Edit</a>
+                                        <button class="btn btn-sm btn-primary">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </f:for>
+                        </div>
                     </div>
                 </div>
             </div>

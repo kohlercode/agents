@@ -100,4 +100,23 @@ final readonly class SettingsService
             (int)($settings['pinned_chats_limit'] ?? SettingRepository::DEFAULT_PINNED_CHATS_LIMIT)
         );
     }
+
+    public function getProviderByUid(int $providerUid): array
+    {
+        $provider = $this->providerRepository->getByUid($providerUid);
+        if ($provider === null) {
+            throw new \RuntimeException('Provider not found.');
+        }
+        return $provider;
+    }
+    
+    public function updateProvider(array $providerData): void
+    {
+        $this->providerRepository->update($providerData);
+    }
+
+    public function addProvider(array $providerData): int
+    {
+        return $this->providerRepository->save($providerData);
+    }
 }

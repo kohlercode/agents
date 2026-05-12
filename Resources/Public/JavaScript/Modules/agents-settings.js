@@ -39,32 +39,6 @@ const apiPost = async (routeName, payload) => {
   return response.json();
 };
 
-const renderProviders = (providers) => {
-  providerListEl.innerHTML = '';
-  providers.forEach((provider) => {
-    const card = document.createElement('div');
-    card.className = 'border rounded p-2 mb-2';
-    const isActive = Number(provider.uid) === Number(activeProviderUid);
-    card.innerHTML = `
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <strong>${provider.title}</strong>
-          <div class="text-muted">${provider.provider_key} / ${provider.model_identifier || '-'}</div>
-        </div>
-        <button class="btn btn-sm ${isActive ? 'btn-success' : 'btn-outline-primary'}">
-          ${isActive ? 'Active' : 'Activate'}
-        </button>
-      </div>
-    `;
-    card.querySelector('button').addEventListener('click', async () => {
-      await apiPost(root.dataset.routeActivateProvider, { providerUid: Number(provider.uid) });
-      await loadSettings();
-      await loadProviders();
-    });
-    providerListEl.appendChild(card);
-  });
-};
-
 const loadSettings = async () => {
   const result = await apiGet(root.dataset.routeGetSettings);
   if (!result.success) {
@@ -75,14 +49,6 @@ const loadSettings = async () => {
   backendModulePositionEl.value = settings.backend_module_position || 'after:media';
   pinnedChatsLimitEl.value = String(Number(settings.pinned_chats_limit) || DEFAULT_PINNED_CHATS_LIMIT);
   activeProviderUid = Number(settings.active_provider_uid || 0);
-};
-
-const loadProviders = async () => {
-  const result = await apiGet(root.dataset.routeListProviders);
-  if (!result.success) {
-    return;
-  }
-  renderProviders(result.data.providers || []);
 };
 
 saveSettingsEl.addEventListener('click', async () => {
@@ -100,26 +66,4 @@ saveSettingsEl.addEventListener('click', async () => {
   pinnedChatsLimitEl.value = String(pinnedChatsLimit);
 });
 
-newProviderEl.addEventListener('click', async () => {
-  const providerKey = window.prompt('Provider key (google|deepseek|openrouter)', 'openrouter');
-  if (!providerKey) {
-    return;
-  }
-  const title = window.prompt('Provider title', `${providerKey} provider`);
-  if (!title) {
-    return;
-  }
-  const modelIdentifier = window.prompt('Default model identifier', '');
-  const apiBaseUrl = window.prompt('API base URL (optional)', '');
-  const apiKey = window.prompt('API key (stored encrypted)', '');
-  await apiPost(root.dataset.routeSaveProvider, {
-    title,
-    providerKey,
-    modelIdentifier,
-    apiBaseUrl,
-    apiKey,
-  });
-  await loadProviders();
-});
-
-Promise.all([loadSettings(), loadProviders()]);
+Promise.all([loadSettings()]);

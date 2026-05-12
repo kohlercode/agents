@@ -42,6 +42,21 @@ return [
             '_default' => [
                 'target' => SettingsModuleController::class . '::handleRequest',
             ],
+            'editProvider' => [
+                'target' => SettingsModuleController::class . '::editProvider',
+                'parameters' => ['providerUid' => 'providerUid'],
+            ],
+            'saveProvider' => [
+                'target' => SettingsModuleController::class . '::saveProvider',
+                'parameters' => ['providerUid' => 'providerUid'],
+            ],
+            'addProviderForm' => [
+                'target' => SettingsModuleController::class . '::addProviderForm',
+            ],
+            'deleteProvider' => [
+                'target' => SettingsModuleController::class . '::deleteProvider',
+                'parameters' => ['providerUid' => 'providerUid'],
+            ],
         ],
     ],
 ];

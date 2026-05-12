@@ -1,0 +1,19 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+<f:layout name="Module" />
+
+<f:section name="Content">
+    <f:asset.script
+        identifier="agents-settings-module"
+        src="EXT:agents/Resources/Public/JavaScript/Modules/agents-settings.js"
+        type="module"
+    />
+    
+    <h1>New provider</h1>
+    <f:debug inline="true">{provider}</f:debug>
+    <f:variable name="action" value="{be:moduleLink(route: 'agents_settings.addProviderForm', arguments: {mode: 'save'})}" />
+    <f:render partial="ProviderForm" arguments="{provider: {}, action: action}" />
+
+</f:section>
+</html>

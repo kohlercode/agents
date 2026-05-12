@@ -44,7 +44,10 @@ final readonly class SystemInfoTool implements ToolInterface
             $sites[] = [
                 'identifier' => $site->getIdentifier(),
                 'base' => (string)$site->getBase(),
+                'rootPageId' => (int)$site->getRootPageId(),
                 'languages' => $languages,
+                //'defaultLanguage' => (string)$site->getDefaultLanguage()->getTitle(),
+                'settings' => (array)$site->getSettings(),
             ];
         }
 

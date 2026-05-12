@@ -1,0 +1,23 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+<f:layout name="Module" />
+
+<f:section name="Content">
+    <f:asset.script
+        identifier="agents-settings-module"
+        src="EXT:agents/Resources/Public/JavaScript/Modules/agents-settings.js"
+        type="module"
+    />
+    
+    <header class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">{provider.title}</h1>
+        <small class="text-muted mb-3 text-uppercase">{provider.provider_key} / {provider.model_identifier}</small>
+    </header>
+
+    <f:variable name="action" value="{be:moduleLink(route: 'agents_settings.editProvider', arguments: {providerUid: provider.uid, mode: 'update'})}" />
+        <f:render partial="ProviderForm" arguments="{provider: provider, action: action}" />
+    </main>
+
+</f:section>
+</html>
