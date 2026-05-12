@@ -75,6 +75,22 @@
     background-color: var(--agents-surface-message);
 }
 
+.agents-chat-thread-list__heading {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--agents-text-muted);
+    padding: 0.5rem 1rem 0.25rem;
+    background-color: var(--agents-surface-message);
+}
+
+.agents-chat-thread-list__separator {
+    height: 1px;
+    background-color: var(--agents-border-subtle);
+    margin: 1rem;
+}
+
 .agents-chat-thread-item {
     border-color: var(--agents-border-subtle) !important;
     color: var(--agents-text-primary);
@@ -101,6 +117,79 @@
         border-inline-start: 3px solid var(--typo3-surface-primary, #0d6efd) !important;
         padding-inline-start: calc(1rem - 2px);
     }
+
+    &.is-pinned {
+        background-color: color-mix(
+            in srgb,
+            var(--typo3-surface-primary, #0d6efd) 4%,
+            var(--agents-surface-message)
+        );
+    }
+
+    &:hover .agents-chat-thread-item__pin,
+    &:focus-within .agents-chat-thread-item__pin {
+        opacity: 1;
+    }
+}
+
+.agents-chat-thread-item__select {
+    color: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: transparent;
+    border: 0;
+    line-height: 1.4;
+    font-size: 1rem;
+
+    &:hover,
+    &:focus-visible {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .agents-chat-thread-item.active & {
+        font-weight: 600;
+    }
+}
+
+.agents-chat-thread-item__pin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    background-color: transparent;
+    color: var(--agents-text-muted);
+    flex-shrink: 0;
+    opacity: 0;
+    transition:
+        opacity 0.15s ease,
+        background-color 0.15s ease,
+        color 0.15s ease;
+
+    &:hover {
+        background-color: var(--agents-surface-elevated);
+        color: var(--agents-text-primary);
+    }
+
+    &:focus-visible,
+    &.is-active {
+        opacity: 1;
+    }
+
+    &.is-active {
+        color: var(--typo3-surface-primary, #0d6efd);
+        border-color: var(--typo3-surface-primary, #0d6efd);
+        background-color: color-mix(in srgb, var(--typo3-surface-primary, #0d6efd) 10%, transparent);
+    }
+}
+
+.agents-chat-thread-item__pin-icon {
+    font-size: 0.85rem;
+    line-height: 1;
 }
 
 // --- Thread (messages + composer) ------------------------------------------

@@ -18,6 +18,12 @@
             <trans-unit id="tx_agents_domain_model_chat.created_by_be_user">
                 <source>Created by backend user</source>
             </trans-unit>
+            <trans-unit id="tx_agents_domain_model_chat.pinned">
+                <source>Pinned</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_chat.sorting">
+                <source>Pin order</source>
+            </trans-unit>
 
             <trans-unit id="tx_agents_domain_model_message">
                 <source>Agent Message</source>
@@ -80,6 +86,9 @@
             </trans-unit>
             <trans-unit id="tx_agents_domain_model_setting.feature_flags_json">
                 <source>Feature flags JSON</source>
+            </trans-unit>
+            <trans-unit id="tx_agents_domain_model_setting.pinned_chats_limit">
+                <source>Maximum number of pinned chats per user</source>
             </trans-unit>
         </body>
     </file>

@@ -30,6 +30,12 @@ return [
         'target' => ChatApiController::class . '::sendMessage',
         'inheritAccessFromModule' => 'agents_chat',
     ],
+    'agents_chat_pin' => [
+        'path' => '/agents/chat/pin',
+        'methods' => ['POST'],
+        'target' => ChatApiController::class . '::setPinned',
+        'inheritAccessFromModule' => 'agents_chat',
+    ],
     'agents_settings_get' => [
         'path' => '/agents/settings/get',
         'methods' => ['GET'],

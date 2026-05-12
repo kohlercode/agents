@@ -62,22 +62,73 @@ const updateThreadTitle = (chats) => {
   threadTitleEl.textContent = active.title || `Chat #${active.uid}`;
 };
 
+const createChatRow = (chat) => {
+  const isActive = Number(chat.uid) === Number(activeChatId);
+  const isPinned = Number(chat.pinned) === 1;
+
+  const row = document.createElement('div');
+  row.className = `list-group-item agents-chat-thread-item d-flex align-items-center gap-2 ${isActive ? 'active' : ''} ${isPinned ? 'is-pinned' : ''}`;
+  row.dataset.chatUid = String(chat.uid);
+
+  const select = document.createElement('button');
+  select.type = 'button';
+  select.className = 'agents-chat-thread-item__select text-start flex-grow-1 p-0';
+  select.textContent = chat.title || `Chat #${chat.uid}`;
+  select.addEventListener('click', () => {
+    activeChatId = Number(chat.uid);
+    void loadMessages();
+    void loadChats();
+  });
+
+  const pin = document.createElement('button');
+  pin.type = 'button';
+  pin.className = `agents-chat-thread-item__pin btn btn-sm ${isPinned ? 'is-active' : ''}`;
+  pin.title = isPinned ? (root.dataset.labelUnpin || 'Unpin chat') : (root.dataset.labelPin || 'Pin chat');
+  pin.setAttribute('aria-label', pin.title);
+  pin.setAttribute('aria-pressed', String(isPinned));
+  pin.innerHTML = '<span class="agents-chat-thread-item__pin-icon" aria-hidden="true">&#128204;</span>';
+  pin.addEventListener('click', async (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    await togglePin(Number(chat.uid), !isPinned);
+  });
+
+  row.append(select, pin);
+  return row;
+};
+
 const renderChats = (chats) => {
   listEl.innerHTML = '';
-  chats.forEach((chat) => {
-    const button = document.createElement('button');
-    button.type = 'button';
-    const isActive = Number(chat.uid) === Number(activeChatId);
-    button.className = `list-group-item list-group-item-action agents-chat-thread-item ${isActive ? 'active' : ''}`;
-    button.textContent = chat.title || `Chat #${chat.uid}`;
-    button.addEventListener('click', () => {
-      activeChatId = Number(chat.uid);
-      loadMessages();
-      renderChats(chats);
-    });
-    listEl.appendChild(button);
-  });
+
+  const pinned = chats.filter((c) => Number(c.pinned) === 1);
+  const others = chats.filter((c) => Number(c.pinned) !== 1);
+
+  if (pinned.length > 0) {
+    const heading = document.createElement('div');
+    heading.className = 'agents-chat-thread-list__heading';
+    heading.textContent = root.dataset.labelPinnedHeading || 'Pinned';
+    listEl.appendChild(heading);
+
+    pinned.forEach((chat) => listEl.appendChild(createChatRow(chat)));
+
+    const separator = document.createElement('div');
+    separator.className = 'agents-chat-thread-list__separator';
+    listEl.appendChild(separator);
+  }
+
+  others.forEach((chat) => listEl.appendChild(createChatRow(chat)));
+
   updateThreadTitle(chats);
+};
+
+const togglePin = async (chatUid, pinned) => {
+  const result = await apiPost(root.dataset.routeSetPinned, { chatUid, pinned });
+  if (!result.success) {
+    const message = result.error?.message || 'Could not update pinned state.';
+    window.alert(message);
+    return;
+  }
+  await loadChats();
 };
 
 const renderMessages = (messages) => {

@@ -7,6 +7,7 @@ namespace Kohlercode\Agents\Repository;
 final readonly class SettingRepository extends AbstractRepository
 {
     private const TABLE = 'tx_agents_domain_model_setting';
+    public const DEFAULT_PINNED_CHATS_LIMIT = 20;
 
     /**
      * @return array<string, mixed>
@@ -37,6 +38,7 @@ final readonly class SettingRepository extends AbstractRepository
             'active_provider_uid' => 0,
             'backend_module_position' => 'after:media',
             'feature_flags_json' => '{}',
+            'pinned_chats_limit' => self::DEFAULT_PINNED_CHATS_LIMIT,
         ]);
 
         $uid = (int)$connection->lastInsertId(self::TABLE);
@@ -45,11 +47,17 @@ final readonly class SettingRepository extends AbstractRepository
             'system_prompt' => '',
             'active_provider_uid' => 0,
             'feature_flags_json' => '{}',
+            'backend_module_position' => 'after:media',
+            'pinned_chats_limit' => self::DEFAULT_PINNED_CHATS_LIMIT,
         ];
     }
 
-    public function saveAllSettings(string $systemPrompt, int $activeProviderUid, string $backendModulePosition): void
-    {
+    public function saveAllSettings(
+        string $systemPrompt,
+        int $activeProviderUid,
+        string $backendModulePosition,
+        int $pinnedChatsLimit
+    ): void {
         $existing = $this->getOrCreate();
         $uid = (int)$existing['uid'];
         $connection = $this->getConnection(self::TABLE);
@@ -58,6 +66,7 @@ final readonly class SettingRepository extends AbstractRepository
             'system_prompt' => $systemPrompt,
             'active_provider_uid' => $activeProviderUid,
             'backend_module_position' => $backendModulePosition,
+            'pinned_chats_limit' => $pinnedChatsLimit,
         ], ['uid' => $uid]);
     }
 }

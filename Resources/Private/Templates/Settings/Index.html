@@ -27,13 +27,30 @@
                             </label>
                             <textarea id="agents-system-prompt" class="form-control" rows="8"></textarea>
                         </div>
-                        <div class="form-floating">
+                        <div class="form-floating mb-3">
                             <label for="agents-backend-module-position">
                                 <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.backendModulePosition" />
                             </label>
                             <input id="agents-backend-module-position" class="form-control" type="text" placeholder="e.g. after:media" />
                         </div>
-                        <button id="agents-save-settings" type="button" class="btn btn-primary mt-3">Save settings</button>
+                        <div class="form-floating">
+                            <label for="agents-pinned-chats-limit">
+                                <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.pinnedChatsLimit" />
+                            </label>
+                            <input id="agents-pinned-chats-limit"
+                                   class="form-control"
+                                   type="number"
+                                   min="1"
+                                   max="999"
+                                   step="1"
+                                   placeholder="20" />
+                            <div class="form-text">
+                                <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.pinnedChatsLimit.help" />
+                            </div>
+                        </div>
+                        <button id="agents-save-settings" type="button" class="btn btn-primary mt-3">
+                            <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.save" />
+                        </button>
                     </div>
                 </div>
             </div>

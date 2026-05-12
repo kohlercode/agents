@@ -26,12 +26,32 @@ final readonly class SettingsService
         return $this->settingRepository->getOrCreate();
     }
 
-    public function saveSettings(string $systemPrompt, int $activeProviderUid, string $backendModulePosition): void
-    {
+    public function saveSettings(
+        string $systemPrompt,
+        int $activeProviderUid,
+        string $backendModulePosition,
+        int $pinnedChatsLimit
+    ): void {
         if ($activeProviderUid > 0) {
             $this->providerRepository->setActive($activeProviderUid);
         }
-        $this->settingRepository->saveAllSettings($systemPrompt, $activeProviderUid, $backendModulePosition);
+        $this->settingRepository->saveAllSettings(
+            $systemPrompt,
+            $activeProviderUid,
+            $backendModulePosition,
+            $this->clampPinnedChatsLimit($pinnedChatsLimit)
+        );
+    }
+
+    private function clampPinnedChatsLimit(int $value): int
+    {
+        if ($value < 1) {
+            return 1;
+        }
+        if ($value > 999) {
+            return 999;
+        }
+        return $value;
     }
 
     /**
@@ -74,9 +94,10 @@ final readonly class SettingsService
         $this->providerRepository->setActive($providerUid);
         $settings = $this->settingRepository->getOrCreate();
         $this->settingRepository->saveAllSettings(
-            (string)($settings['system_prompt'] ?? ''), 
-            $providerUid, 
-            (string)($settings['backend_module_position'] ?? '')
+            (string)($settings['system_prompt'] ?? ''),
+            $providerUid,
+            (string)($settings['backend_module_position'] ?? ''),
+            (int)($settings['pinned_chats_limit'] ?? SettingRepository::DEFAULT_PINNED_CHATS_LIMIT)
         );
     }
 }

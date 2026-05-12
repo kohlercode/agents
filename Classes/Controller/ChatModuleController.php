@@ -29,6 +29,7 @@ final readonly class ChatModuleController
                     'createChat' => 'agents_chat_create',
                     'listMessages' => 'agents_chat_messages',
                     'sendMessage' => 'agents_chat_send',
+                    'setPinned' => 'agents_chat_pin',
                 ],
             ])
             ->renderResponse('Chat/Index');

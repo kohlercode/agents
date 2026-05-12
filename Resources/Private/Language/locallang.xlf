@@ -24,6 +24,18 @@
             <trans-unit id="chat.empty_hint">
                 <source>No messages yet. Type below to start the conversation.</source>
             </trans-unit>
+            <trans-unit id="chat.pin">
+                <source>Pin chat</source>
+            </trans-unit>
+            <trans-unit id="chat.unpin">
+                <source>Unpin chat</source>
+            </trans-unit>
+            <trans-unit id="chat.pinned_heading">
+                <source>Pinned</source>
+            </trans-unit>
+            <trans-unit id="chat.pinned_limit_reached">
+                <source>You have reached the maximum of %d pinned chats. Unpin one before pinning another.</source>
+            </trans-unit>
             <trans-unit id="settings.title">
                 <source>Agents Settings</source>
             </trans-unit>
@@ -35,6 +47,15 @@
             </trans-unit>
             <trans-unit id="settings.providers">
                 <source>Providers</source>
+            </trans-unit>
+            <trans-unit id="settings.pinnedChatsLimit">
+                <source>Maximum number of pinned chats</source>
+            </trans-unit>
+            <trans-unit id="settings.pinnedChatsLimit.help">
+                <source>The maximum number of chats each backend user can pin to the top of the chat list (between 1 and 999).</source>
+            </trans-unit>
+            <trans-unit id="settings.save">
+                <source>Save settings</source>
             </trans-unit>
         </body>
     </file>

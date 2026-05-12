@@ -87,4 +87,31 @@ final class ChatApiController extends AbstractApiController
 
         return $this->success($result);
     }
+
+    public function setPinned(ServerRequestInterface $request): ResponseInterface
+    {
+        $backendUserId = $this->resolveBackendUserId();
+        if ($backendUserId <= 0) {
+            return $this->error('Backend user context missing.', 403);
+        }
+
+        $payload = $this->readJsonBody($request);
+        $chatUid = (int)($payload['chatUid'] ?? 0);
+        $pinned = (bool)($payload['pinned'] ?? false);
+        if ($chatUid <= 0) {
+            return $this->error('Missing required field "chatUid".');
+        }
+
+        try {
+            $result = $this->chatService->setPinned($chatUid, $backendUserId, $pinned);
+        } catch (\Throwable $exception) {
+            return $this->error($exception->getMessage(), 400);
+        }
+
+        return $this->success([
+            'chatUid' => $chatUid,
+            'pinned' => $result['pinned'],
+            'sorting' => $result['sorting'],
+        ]);
+    }
 }

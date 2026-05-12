@@ -58,6 +58,44 @@ final readonly class ChatService
     }
 
     /**
+     * @return array{pinned: bool, sorting: int}
+     */
+    public function setPinned(int $chatUid, int $backendUserId, bool $pinned): array
+    {
+        $chat = $this->chatRepository->getByUid($chatUid);
+        if ($chat === null || (int)($chat['created_by_be_user'] ?? 0) !== $backendUserId) {
+            throw new \RuntimeException('Chat not found or access denied.');
+        }
+
+        $sorting = 0;
+        if ($pinned) {
+            $currentlyPinned = (int)($chat['pinned'] ?? 0) === 1;
+            if (!$currentlyPinned) {
+                $limit = $this->resolvePinnedChatsLimit();
+                $currentCount = $this->chatRepository->countPinnedByBackendUser($backendUserId);
+                if ($currentCount >= $limit) {
+                    throw new \RuntimeException(sprintf(
+                        'You have reached the maximum of %d pinned chats. Unpin one before pinning another.',
+                        $limit
+                    ));
+                }
+            }
+            $sorting = $this->chatRepository->getMaxPinnedSortingByBackendUser($backendUserId) + 1;
+        }
+
+        $this->chatRepository->setPinned($chatUid, $backendUserId, $pinned, $sorting);
+
+        return ['pinned' => $pinned, 'sorting' => $sorting];
+    }
+
+    private function resolvePinnedChatsLimit(): int
+    {
+        $settings = $this->settingRepository->getOrCreate();
+        $limit = (int)($settings['pinned_chats_limit'] ?? SettingRepository::DEFAULT_PINNED_CHATS_LIMIT);
+        return $limit > 0 ? $limit : SettingRepository::DEFAULT_PINNED_CHATS_LIMIT;
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function sendMessage(int $chatUid, string $message, int $backendUserId): array

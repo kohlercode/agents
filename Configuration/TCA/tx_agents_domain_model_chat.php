@@ -20,7 +20,7 @@ return [
         'iconfile' => 'EXT:agents/Resources/Public/Icons/module-agents-chat.svg',
     ],
     'types' => [
-        '1' => ['showitem' => 'hidden, title, provider_uid, model_identifier, created_by_be_user'],
+        '1' => ['showitem' => 'hidden, title, provider_uid, model_identifier, created_by_be_user, pinned, sorting'],
     ],
     'columns' => [
         'hidden' => [
@@ -60,6 +60,22 @@ return [
         ],
         'created_by_be_user' => [
             'label' => 'LLL:EXT:agents/Resources/Private/Language/locallang_db.xlf:tx_agents_domain_model_chat.created_by_be_user',
+            'config' => [
+                'type' => 'number',
+                'default' => 0,
+            ],
+        ],
+        'pinned' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:agents/Resources/Private/Language/locallang_db.xlf:tx_agents_domain_model_chat.pinned',
+            'config' => [
+                'type' => 'check',
+                'default' => 0,
+            ],
+        ],
+        'sorting' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:agents/Resources/Private/Language/locallang_db.xlf:tx_agents_domain_model_chat.sorting',
             'config' => [
                 'type' => 'number',
                 'default' => 0,

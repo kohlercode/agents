@@ -20,7 +20,7 @@ return [
         'iconfile' => 'EXT:agents/Resources/Public/Icons/module-agents-settings.svg',
     ],
     'types' => [
-        '1' => ['showitem' => 'hidden, system_prompt, active_provider_uid, feature_flags_json'],
+        '1' => ['showitem' => 'hidden, system_prompt, active_provider_uid, pinned_chats_limit, feature_flags_json'],
     ],
     'columns' => [
         'hidden' => [
@@ -52,6 +52,18 @@ return [
             'config' => [
                 'type' => 'text',
                 'rows' => 4,
+            ],
+        ],
+        'pinned_chats_limit' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:agents/Resources/Private/Language/locallang_db.xlf:tx_agents_domain_model_setting.pinned_chats_limit',
+            'config' => [
+                'type' => 'number',
+                'default' => 20,
+                'range' => [
+                    'lower' => 1,
+                    'upper' => 999,
+                ],
             ],
         ],
     ],

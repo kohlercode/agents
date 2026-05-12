@@ -10,10 +10,14 @@ CREATE TABLE tx_agents_domain_model_chat (
     provider_uid INT DEFAULT 0 NOT NULL,
     model_identifier VARCHAR(255) DEFAULT '' NOT NULL,
     created_by_be_user INT DEFAULT 0 NOT NULL,
+    pinned SMALLINT DEFAULT 0 NOT NULL,
+    sorting INT DEFAULT 0 NOT NULL,
     PRIMARY KEY (uid),
     KEY parent (pid),
     KEY provider (provider_uid),
-    KEY creator (created_by_be_user)
+    KEY creator (created_by_be_user),
+    KEY pinned (pinned),
+    KEY sorting (sorting)
 );
 
 CREATE TABLE tx_agents_domain_model_message (
@@ -70,6 +74,7 @@ CREATE TABLE tx_agents_domain_model_setting (
     active_provider_uid INT DEFAULT 0 NOT NULL,
     feature_flags_json TEXT,
     backend_module_position VARCHAR(255) DEFAULT '' NOT NULL,
+    pinned_chats_limit INT DEFAULT 20 NOT NULL,
     PRIMARY KEY (uid),
     KEY parent (pid),
     KEY active_provider (active_provider_uid)

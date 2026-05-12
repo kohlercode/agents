@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kohlercode\Agents\Backend\Ajax;
 
+use Kohlercode\Agents\Repository\SettingRepository;
 use Kohlercode\Agents\Service\SettingsService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,7 +30,13 @@ final class SettingsApiController extends AbstractApiController
         $systemPrompt = (string)($payload['systemPrompt'] ?? '');
         $activeProviderUid = (int)($payload['activeProviderUid'] ?? 0);
         $backendModulePosition = (string)($payload['backendModulePosition'] ?? '');
-        $this->settingsService->saveSettings($systemPrompt, $activeProviderUid, $backendModulePosition);
+        $pinnedChatsLimit = (int)($payload['pinnedChatsLimit'] ?? SettingRepository::DEFAULT_PINNED_CHATS_LIMIT);
+        $this->settingsService->saveSettings(
+            $systemPrompt,
+            $activeProviderUid,
+            $backendModulePosition,
+            $pinnedChatsLimit
+        );
 
         return $this->success();
     }
