@@ -30,6 +30,9 @@
             <trans-unit id="settings.systemPrompt">
                 <source>System prompt</source>
             </trans-unit>
+            <trans-unit id="settings.backendModulePosition">
+                <source>Backend module position</source>
+            </trans-unit>
             <trans-unit id="settings.providers">
                 <source>Providers</source>
             </trans-unit>

@@ -28,7 +28,8 @@ final class SettingsApiController extends AbstractApiController
         $payload = $this->readJsonBody($request);
         $systemPrompt = (string)($payload['systemPrompt'] ?? '');
         $activeProviderUid = (int)($payload['activeProviderUid'] ?? 0);
-        $this->settingsService->saveSettings($systemPrompt, $activeProviderUid);
+        $backendModulePosition = (string)($payload['backendModulePosition'] ?? '');
+        $this->settingsService->saveSettings($systemPrompt, $activeProviderUid, $backendModulePosition);
 
         return $this->success();
     }

@@ -20,11 +20,19 @@
         <div class="row g-3">
             <div class="col-12 col-xl-6">
                 <div class="card">
-                    <div class="card-header">
-                        <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.systemPrompt" />
-                    </div>
                     <div class="card-body">
-                        <textarea id="agents-system-prompt" class="form-control" rows="8"></textarea>
+                        <div class="form-floating mb-3">
+                            <label for="agents-system-prompt">
+                                <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.systemPrompt" />
+                            </label>
+                            <textarea id="agents-system-prompt" class="form-control" rows="8"></textarea>
+                        </div>
+                        <div class="form-floating">
+                            <label for="agents-backend-module-position">
+                                <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.backendModulePosition" />
+                            </label>
+                            <input id="agents-backend-module-position" class="form-control" type="text" placeholder="e.g. after:media" />
+                        </div>
                         <button id="agents-save-settings" type="button" class="btn btn-primary mt-3">Save settings</button>
                     </div>
                 </div>

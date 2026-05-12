@@ -35,6 +35,7 @@ final readonly class SettingRepository extends AbstractRepository
             'hidden' => 0,
             'system_prompt' => '',
             'active_provider_uid' => 0,
+            'backend_module_position' => 'after:media',
             'feature_flags_json' => '{}',
         ]);
 
@@ -47,7 +48,7 @@ final readonly class SettingRepository extends AbstractRepository
         ];
     }
 
-    public function saveSystemPromptAndActive(string $systemPrompt, int $activeProviderUid): void
+    public function saveAllSettings(string $systemPrompt, int $activeProviderUid, string $backendModulePosition): void
     {
         $existing = $this->getOrCreate();
         $uid = (int)$existing['uid'];
@@ -56,6 +57,7 @@ final readonly class SettingRepository extends AbstractRepository
             'tstamp' => time(),
             'system_prompt' => $systemPrompt,
             'active_provider_uid' => $activeProviderUid,
+            'backend_module_position' => $backendModulePosition,
         ], ['uid' => $uid]);
     }
 }

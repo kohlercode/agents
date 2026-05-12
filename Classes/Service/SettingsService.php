@@ -26,12 +26,12 @@ final readonly class SettingsService
         return $this->settingRepository->getOrCreate();
     }
 
-    public function saveSettings(string $systemPrompt, int $activeProviderUid): void
+    public function saveSettings(string $systemPrompt, int $activeProviderUid, string $backendModulePosition): void
     {
         if ($activeProviderUid > 0) {
             $this->providerRepository->setActive($activeProviderUid);
         }
-        $this->settingRepository->saveSystemPromptAndActive($systemPrompt, $activeProviderUid);
+        $this->settingRepository->saveAllSettings($systemPrompt, $activeProviderUid, $backendModulePosition);
     }
 
     /**
@@ -73,6 +73,10 @@ final readonly class SettingsService
     {
         $this->providerRepository->setActive($providerUid);
         $settings = $this->settingRepository->getOrCreate();
-        $this->settingRepository->saveSystemPromptAndActive((string)($settings['system_prompt'] ?? ''), $providerUid);
+        $this->settingRepository->saveAllSettings(
+            (string)($settings['system_prompt'] ?? ''), 
+            $providerUid, 
+            (string)($settings['backend_module_position'] ?? '')
+        );
     }
 }

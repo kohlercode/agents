@@ -5,6 +5,7 @@ if (!root) {
 }
 
 const promptEl = document.querySelector('#agents-system-prompt');
+const backendModulePositionEl = document.querySelector('#agents-backend-module-position');
 const saveSettingsEl = document.querySelector('#agents-save-settings');
 const newProviderEl = document.querySelector('#agents-new-provider');
 const providerListEl = document.querySelector('#agents-provider-list');
@@ -68,6 +69,7 @@ const loadSettings = async () => {
   }
   const settings = result.data.settings || {};
   promptEl.value = settings.system_prompt || '';
+  backendModulePositionEl.value = settings.backend_module_position || 'after:media';
   activeProviderUid = Number(settings.active_provider_uid || 0);
 };
 
@@ -80,9 +82,11 @@ const loadProviders = async () => {
 };
 
 saveSettingsEl.addEventListener('click', async () => {
+  console.log('saveSettingsEl.addEventListener', promptEl.value, activeProviderUid, backendModulePositionEl.value);
   await apiPost(root.dataset.routeSaveSettings, {
     systemPrompt: promptEl.value,
     activeProviderUid,
+    backendModulePosition: backendModulePositionEl.value,
   });
 });
 

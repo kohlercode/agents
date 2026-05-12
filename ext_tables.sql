@@ -69,6 +69,7 @@ CREATE TABLE tx_agents_domain_model_setting (
     system_prompt TEXT,
     active_provider_uid INT DEFAULT 0 NOT NULL,
     feature_flags_json TEXT,
+    backend_module_position VARCHAR(255) DEFAULT '' NOT NULL,
     PRIMARY KEY (uid),
     KEY parent (pid),
     KEY active_provider (active_provider_uid)

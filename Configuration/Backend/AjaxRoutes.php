@@ -38,7 +38,7 @@ return [
     ],
     'agents_settings_save' => [
         'path' => '/agents/settings/save',
-        'methods' => ['POST'],
+        'methods' => ['GET', 'POST'],
         'target' => SettingsApiController::class . '::saveSettings',
         'inheritAccessFromModule' => 'agents_settings',
     ],
@@ -50,7 +50,7 @@ return [
     ],
     'agents_provider_save' => [
         'path' => '/agents/provider/save',
-        'methods' => ['POST'],
+        'methods' => ['GET', 'POST'],
         'target' => SettingsApiController::class . '::saveProvider',
         'inheritAccessFromModule' => 'agents_settings',
     ],
