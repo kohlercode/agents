@@ -19,7 +19,7 @@ Backend extension that brings AI chat with tool calling into TYPO3. Assistants c
 - **Multiple chats** — work in parallel conversations from the backend module.
 - **Content creation** — support for assistant-driven content workflows in the CMS context.
 - **SEO tools** — built-in assistance oriented toward SEO-related tasks.
-- **Custom tools** — other TYPO3 extensions can register additional tools; see [Adding tools from another extension](Docs/index.md).
+- **Custom tools** — other TYPO3 extensions can register additional tools; see [Adding tools from another extension](Docs/custom-tools.md#adding-tools-from-another-extension).
 
 ## Official Documentation
 
