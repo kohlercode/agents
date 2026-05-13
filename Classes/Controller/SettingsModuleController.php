@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Backend\Tree\Repository\PageTreeRepository;
 
 #[AsController]
 final readonly class SettingsModuleController
@@ -17,6 +18,7 @@ final readonly class SettingsModuleController
     public function __construct(
         private ModuleTemplateFactory $moduleTemplateFactory,
         private SettingsService $settingsService,
+        private PageTreeRepository $pageTreeRepository,
     ) {}
 
     public function handleRequest(ServerRequestInterface $request): ResponseInterface
@@ -24,7 +26,6 @@ final readonly class SettingsModuleController
         $moduleTemplate = $this->moduleTemplateFactory->create($request);
         $moduleTemplate->setTitle('Agents Settings');
         $moduleTemplate->makeDocHeaderModuleMenu();
-
         $providers = $this->settingsService->listProviders();
 
         return $moduleTemplate

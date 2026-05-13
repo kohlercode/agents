@@ -20,7 +20,7 @@ return [
         'iconfile' => 'EXT:agents/Resources/Public/Icons/module-agents-chat.svg',
     ],
     'types' => [
-        '1' => ['showitem' => 'hidden, chat_uid, role, content, token_usage, finish_reason, tool_calls_json, response_meta_json'],
+        '1' => ['showitem' => 'hidden, chat_uid, role, content, token_usage, finish_reason, tool_calls_json, response_meta_json, message_artifacts_json'],
     ],
     'columns' => [
         'hidden' => [
@@ -88,6 +88,13 @@ return [
         ],
         'response_meta_json' => [
             'label' => 'LLL:EXT:agents/Resources/Private/Language/locallang_db.xlf:tx_agents_domain_model_message.response_meta_json',
+            'config' => [
+                'type' => 'text',
+                'rows' => 4,
+            ],
+        ],
+        'message_artifacts_json' => [
+            'label' => 'LLL:EXT:agents/Resources/Private/Language/locallang_db.xlf:tx_agents_domain_model_message.message_artifacts_json',
             'config' => [
                 'type' => 'text',
                 'rows' => 4,

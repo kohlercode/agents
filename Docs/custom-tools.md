@@ -34,6 +34,37 @@ Use constructor injection for TYPO3 and domain services; services are autowired 
 
 **Naming:** prefix tool names with your extension key (for example `my_shop_search_orders`) so they do not collide with core Agents tools or other extensions.
 
+### Readable results and media artifacts
+
+Tool results are not displayed as raw JSON in the chat. Return a short human-readable field so the assistant can summarize the outcome:
+
+```php
+return [
+    'message' => 'FAQ creation completed.',
+    'data' => $response['data'],
+];
+```
+
+Supported readable fields are `message`, `summary`, and `displayText`.
+
+If your tool creates or discovers media that should be rendered in the chat, add an `artifact` or `artifacts` field:
+
+```php
+return [
+    'message' => 'Generated a preview image.',
+    'artifacts' => [
+        [
+            'type' => 'image',
+            'url' => '/fileadmin/agents/previews/example.png',
+            'alt' => 'Generated landing page preview',
+            'title' => 'Landing page preview',
+        ],
+    ],
+];
+```
+
+Artifact `type` can be `image`, `video`, or `iframe`. URLs must be HTTP(S) URLs or same-site absolute paths. Iframes are additionally limited by the backend chat renderer's allowed origins.
+
 ### 3. Tag the service
 
 In your extension’s `Configuration/Services.yaml`, register the class and tag it `agents.tool`:

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kohlercode\Agents\Service;
 
 use Kohlercode\Agents\Llm\JsonSchemaForLlm;
+use Kohlercode\Agents\Llm\LlmProviderInterface;
 use Kohlercode\Agents\Llm\LlmProviderRequest;
 use Kohlercode\Agents\Llm\ProviderRegistry;
 use Kohlercode\Agents\Repository\ChatRepository;
@@ -114,7 +115,7 @@ final readonly class ChatService
         if ($provider === null) {
             $assistantText = 'No active provider configured.';
             $this->messageRepository->addMessage($chatUid, 'assistant', $assistantText, $backendUserId);
-            return ['assistantMessage' => $assistantText, 'toolResults' => []];
+            return ['assistantMessage' => $assistantText, 'artifacts' => [], 'toolResults' => []];
         }
 
         $llmMessages = $this->buildLlmMessages($chatUid);
@@ -138,13 +139,21 @@ final readonly class ChatService
         );
 
         $toolResults = $this->executeToolCalls($response->toolCalls, $backendUserId);
-        $assistantText = $response->content;
+        $artifacts = $this->collectArtifacts($toolResults);
+        $assistantText = trim($response->content);
         if (trim($assistantText) === '' && $response->finishReason === 'MALFORMED_FUNCTION_CALL') {
             $assistantText = 'The model attempted to call a tool but returned an invalid tool payload (MALFORMED_FUNCTION_CALL). '
                 . 'This often happens with strict JSON Schema or large arguments; try again with a shorter request or a different model.';
         }
         if ($toolResults !== []) {
-            $assistantText .= "\n\n" . $this->buildToolSummaryText($toolResults);
+            $assistantText = $this->buildFinalAssistantText(
+                $providerClient,
+                $provider,
+                (string)($chat['model_identifier'] ?: $provider['model_identifier']),
+                $llmMessages,
+                $assistantText,
+                $toolResults
+            );
         }
 
         $this->messageRepository->addMessage(
@@ -155,12 +164,14 @@ final readonly class ChatService
             $response->tokenUsage,
             $response->finishReason,
             $response->meta,
-            $response->toolCalls
+            $response->toolCalls,
+            $artifacts
         );
 
         return [
             'assistantMessage' => $assistantText,
-            'toolResults' => $toolResults,
+            'artifacts' => $artifacts,
+            'toolResults' => $this->buildToolResultStatuses($toolResults),
         ];
     }
 
@@ -238,6 +249,156 @@ final readonly class ChatService
     }
 
     /**
+     * @param array<string, mixed> $provider
+     * @param array<int, array<string, mixed>> $conversationMessages
+     * @param array<int, array<string, mixed>> $toolResults
+     */
+    private function buildFinalAssistantText(
+        LlmProviderInterface $providerClient,
+        array $provider,
+        string $modelIdentifier,
+        array $conversationMessages,
+        string $initialAssistantText,
+        array $toolResults,
+    ): string {
+        $toolResultsJson = json_encode($toolResults, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        if ($toolResultsJson === false) {
+            return $this->buildToolSummaryText($toolResults);
+        }
+
+        $messages = $conversationMessages;
+        $messages[] = [
+            'role' => 'assistant',
+            'content' => $initialAssistantText !== '' ? $initialAssistantText : 'I used one or more tools.',
+        ];
+        $messages[] = [
+            'role' => 'user',
+            'content' => implode("\n", [
+                'Tool execution results are available as internal JSON below.',
+                'Write the final answer for the TYPO3 backend user in concise, readable Markdown.',
+                'Do not quote, print, or wrap the raw JSON. Summarize only the useful outcome.',
+                'If a tool returned artifacts, mention them naturally; the UI will render the media separately.',
+                '',
+                '```json',
+                $toolResultsJson,
+                '```',
+            ]),
+        ];
+
+        try {
+            $finalResponse = $providerClient->complete(
+                new LlmProviderRequest($messages, [], $modelIdentifier),
+                $provider
+            );
+        } catch (\Throwable) {
+            return $this->buildToolSummaryText($toolResults);
+        }
+
+        $finalText = trim($finalResponse->content);
+        return $finalText !== '' ? $finalText : $this->buildToolSummaryText($toolResults);
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $toolResults
+     * @return array<int, array<string, string>>
+     */
+    private function buildToolResultStatuses(array $toolResults): array
+    {
+        $statuses = [];
+        foreach ($toolResults as $toolResult) {
+            $toolName = (string)($toolResult['tool'] ?? '');
+            if ($toolName === '') {
+                continue;
+            }
+
+            $statuses[] = [
+                'tool' => $toolName,
+                'status' => array_key_exists('error', $toolResult) ? 'error' : 'success',
+                'message' => array_key_exists('error', $toolResult)
+                    ? (string)$toolResult['error']
+                    : $this->extractReadableToolResult($toolResult['result'] ?? null),
+            ];
+        }
+
+        return $statuses;
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $toolResults
+     * @return array<int, array<string, string>>
+     */
+    private function collectArtifacts(array $toolResults): array
+    {
+        $artifacts = [];
+        foreach ($toolResults as $toolResult) {
+            $result = $toolResult['result'] ?? null;
+            if (!is_array($result)) {
+                continue;
+            }
+
+            $candidates = [];
+            if (isset($result['artifact'])) {
+                $candidates[] = $result['artifact'];
+            }
+            if (isset($result['artifacts']) && is_array($result['artifacts'])) {
+                $candidates = array_merge($candidates, $result['artifacts']);
+            }
+
+            foreach ($candidates as $candidate) {
+                if (!is_array($candidate)) {
+                    continue;
+                }
+                $artifact = $this->normalizeArtifact($candidate);
+                if ($artifact !== null) {
+                    $artifacts[] = $artifact;
+                }
+            }
+        }
+
+        return $artifacts;
+    }
+
+    /**
+     * @param array<string, mixed> $artifact
+     * @return array<string, string>|null
+     */
+    private function normalizeArtifact(array $artifact): ?array
+    {
+        $type = strtolower(trim((string)($artifact['type'] ?? '')));
+        if (!in_array($type, ['image', 'video', 'iframe'], true)) {
+            return null;
+        }
+
+        $url = trim((string)($artifact['url'] ?? ''));
+        if ($url === '' || !$this->isRenderableArtifactUrl($url)) {
+            return null;
+        }
+
+        $normalized = [
+            'type' => $type,
+            'url' => $url,
+        ];
+        foreach (['title', 'alt', 'mimeType'] as $optionalKey) {
+            $value = trim((string)($artifact[$optionalKey] ?? ''));
+            if ($value !== '') {
+                $normalized[$optionalKey] = mb_substr($value, 0, 255);
+            }
+        }
+
+        return $normalized;
+    }
+
+    private function isRenderableArtifactUrl(string $url): bool
+    {
+        if (str_starts_with($url, '/') && !str_starts_with($url, '//')) {
+            return true;
+        }
+
+        $scheme = parse_url($url, PHP_URL_SCHEME);
+        return in_array($scheme, ['http', 'https'], true);
+    }
+
+    /**
      * @param array<int, array<string, mixed>> $toolResults
      */
     private function buildToolSummaryText(array $toolResults): string
@@ -296,12 +457,36 @@ final readonly class ChatService
             }
 
             $lines[] = sprintf(
-                'Tool "%s" completed. Result: %s',
+                'Tool "%s" completed. %s',
                 $toolName,
-                (string)json_encode($result, JSON_UNESCAPED_UNICODE)
+                $this->extractReadableToolResult($result)
             );
         }
 
         return $lines === [] ? 'Tools executed, but no usable results were returned.' : implode("\n", $lines);
+    }
+
+    private function extractReadableToolResult(mixed $result): string
+    {
+        if (!is_array($result)) {
+            return 'No additional details were returned.';
+        }
+
+        foreach (['message', 'summary', 'displayText'] as $key) {
+            $value = trim((string)($result[$key] ?? ''));
+            if ($value !== '') {
+                return $value;
+            }
+        }
+
+        $fields = array_values(array_filter(
+            array_keys($result),
+            static fn (mixed $key): bool => is_string($key) && !in_array($key, ['artifact', 'artifacts'], true)
+        ));
+        if ($fields !== []) {
+            return 'Returned fields: ' . implode(', ', $fields) . '.';
+        }
+
+        return 'Completed successfully.';
     }
 }

@@ -35,6 +35,7 @@ CREATE TABLE tx_agents_domain_model_message (
     finish_reason VARCHAR(64) DEFAULT '' NOT NULL,
     tool_calls_json TEXT,
     response_meta_json TEXT,
+    message_artifacts_json TEXT,
     PRIMARY KEY (uid),
     KEY parent (pid),
     KEY chat (chat_uid),

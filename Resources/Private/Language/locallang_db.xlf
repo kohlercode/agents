@@ -49,6 +49,9 @@
             <trans-unit id="tx_agents_domain_model_message.response_meta_json">
                 <source>Response meta JSON</source>
             </trans-unit>
+            <trans-unit id="tx_agents_domain_model_message.message_artifacts_json">
+                <source>Message artifacts JSON</source>
+            </trans-unit>
 
             <trans-unit id="tx_agents_domain_model_provider">
                 <source>Agent Provider</source>
