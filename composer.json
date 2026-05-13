@@ -1,13 +1,51 @@
 {
   "name": "kohlercode/agents",
   "type": "typo3-cms-extension",
-  "description": "TYPO3 backend AI agents extension with chat, providers, and tool calling.",
+  "description": "Agents - TYPO3 backend AI agents extension with chat, providers, and tool calling.",
+  "version": "0.1.0",
   "license": "GPL-2.0-or-later",
   "require": {
     "php": "^8.2",
     "typo3/cms-backend": "^14.3",
     "typo3/cms-core": "^14.3",
     "typo3/cms-fluid": "^14.3"
+  },
+  "keywords": [
+      "TYPO3",
+      "extension",
+      "agents",
+      "ai",
+      "chat",
+      "tool",
+      "plugin",
+      "llm",
+      "llm-provider",
+      "llm-providers",
+      "llm-provider-registry",
+      "llm-provider-registries",
+      "llm-provider-registry-registry",
+      "llm-provider-registry-registries",
+  ],
+  "homepage": "https://kohlercode.com/products/typo3/extensions/agents",
+  "authors": [
+      {
+          "name": "Simon K\u00f6hler",
+          "email": "simon@kohlercode.com",
+          "role": "Developer",
+          "homepage": "https://github.com/kohlercode"
+      }
+  ],
+  "funding": [
+      {
+          "type": "paypal",
+          "url": "https://paypal.me/fullstackfreelancer/"
+      }
+  ],
+  "support": {
+      "issues": "https://github.com/kohlercode/agents/issues",
+      "source": "https://github.com/kohlercode/agents",
+      "docs": "https://github.com/kohlercode/agents/blob/master/README.md",
+      "chat": "https://wa.me/13075334323"
   },
   "autoload": {
     "psr-4": {
