@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Kohlercode\Agents\Tool\Implementation;
 
 use Kohlercode\Agents\Tool\ToolInterface;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kohlercode\Agents\Repository\PageRepository;
 
 final class GetPageByUidTool implements ToolInterface
