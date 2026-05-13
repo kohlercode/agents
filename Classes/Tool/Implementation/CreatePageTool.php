@@ -27,6 +27,10 @@ final class CreatePageTool implements ToolInterface
             'properties' => [
                 'parentPid' => ['type' => 'integer', 'minimum' => 1],
                 'title' => ['type' => 'string', 'minLength' => 1, 'maxLength' => 255],
+                'seo_title' => ['type' => 'string', 'minLength' => 1, 'maxLength' => 255],
+                'description' => ['type' => 'string', 'minLength' => 1, 'maxLength' => 255],
+                'og_title' => ['type' => 'string', 'minLength' => 1, 'maxLength' => 255],
+                'og_description' => ['type' => 'string', 'minLength' => 1, 'maxLength' => 255],
                 'doktype' => ['type' => 'integer', 'minimum' => 1],
             ],
             'required' => ['parentPid', 'title'],
@@ -38,6 +42,10 @@ final class CreatePageTool implements ToolInterface
     {
         $parentPid = (int)($arguments['parentPid'] ?? 0);
         $title = trim((string)($arguments['title'] ?? ''));
+        $seo_title = trim((string)($arguments['seo_title'] ?? ''));
+        $description = trim((string)($arguments['description'] ?? ''));
+        $og_title = trim((string)($arguments['og_title'] ?? ''));
+        $og_description = trim((string)($arguments['og_description'] ?? ''));
         $doktype = (int)($arguments['doktype'] ?? 1);
 
         if ($parentPid <= 0 || $title === '') {
@@ -50,6 +58,10 @@ final class CreatePageTool implements ToolInterface
                 $newId => [
                     'pid' => $parentPid,
                     'title' => mb_substr($title, 0, 255),
+                    'seo_title' => mb_substr($seo_title, 0, 255),
+                    'description' => mb_substr($description, 0, 255),
+                    'og_title' => mb_substr($og_title, 0, 255),
+                    'og_description' => mb_substr($og_description, 0, 255),
                     'doktype' => $doktype,
                 ],
             ],
