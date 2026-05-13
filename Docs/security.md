@@ -1,3 +1,5 @@
+# Security Policy
+
 ## API key storage
 
 Provider API keys are stored encrypted in the provider record (`api_key_ref` column). Encryption uses TYPO3's system encryption key (`$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']`) as the basis for key derivation.
