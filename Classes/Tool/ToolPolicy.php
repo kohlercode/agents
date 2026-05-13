@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace Kohlercode\Agents\Tool;
 
-final class ToolPolicy
+/**
+ * Allows execution of any tool registered in the DI container (tag agents.tool).
+ * Third-party extensions register tools by implementing ToolInterface and tagging their service.
+ */
+final readonly class ToolPolicy
 {
-    /**
-     * @var array<string, bool>
-     */
-    private array $allowlist = [
-        'system_info' => true,
-        'create_page' => true,
-        'get_page_by_uid' => true,
-    ];
+    public function __construct(
+        private ToolRegistry $toolRegistry,
+    ) {}
 
     public function isAllowed(string $toolName): bool
     {
-        return $this->allowlist[$toolName] ?? false;
+        return $this->toolRegistry->getByName($toolName) !== null;
     }
 }
