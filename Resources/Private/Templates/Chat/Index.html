@@ -13,6 +13,7 @@
          data-route-list-messages="{ajaxRoutes.listMessages}"
          data-route-send-message="{ajaxRoutes.sendMessage}"
          data-route-set-pinned="{ajaxRoutes.setPinned}"
+         data-route-set-provider="{ajaxRoutes.setProvider}"
          data-label-select-chat="{f:translate(key: 'LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.select_chat') -> f:format.htmlspecialchars()}"
          data-label-pin="{f:translate(key: 'LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.pin') -> f:format.htmlspecialchars()}"
          data-label-unpin="{f:translate(key: 'LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.unpin') -> f:format.htmlspecialchars()}"
@@ -23,13 +24,39 @@
             <section class="agents-chat-main col-12 col-lg-8">
                 <div class="agents-chat-panel agents-chat-panel--thread card border-0 d-flex flex-column">
                     <div class="agents-chat-thread flex-grow-1 d-flex flex-column">
-                        <header class="agents-chat-thread__header">
-                            <div class="agents-chat-thread__header-label">
-                                <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.thread_heading" />
+                        <header class="agents-chat-thread__header d-flex justify-content-between align-items-end gap-3">
+                            <div class="agents-chat-thread__header-main flex-grow-1">
+                                <div class="agents-chat-thread__header-label">
+                                    <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.thread_heading" />
+                                </div>
+                                <h3 class="agents-chat-thread__header-title" id="agents-chat-thread-title">
+                                    <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.select_chat" />
+                                </h3>
                             </div>
-                            <h3 class="agents-chat-thread__header-title" id="agents-chat-thread-title">
-                                <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.select_chat" />
-                            </h3>
+                            <div class="agents-chat-provider-select flex-shrink-0">
+                                <label class="form-label" for="agents-chat-provider">
+                                    <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.provider" />
+                                </label>
+                                <select id="agents-chat-provider" class="form-select form-select-sm" disabled>
+                                    <f:if condition="{activeProviders}">
+                                        <f:then>
+                                            <option value="">
+                                                <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.provider_select" />
+                                            </option>
+                                            <f:for each="{activeProviders}" as="provider">
+                                                <option value="{provider.uid}">
+                                                    {provider.title} ({provider.provider_key} / {provider.model_identifier})
+                                                </option>
+                                            </f:for>
+                                        </f:then>
+                                        <f:else>
+                                            <option value="">
+                                                <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:chat.no_active_providers" />
+                                            </option>
+                                        </f:else>
+                                    </f:if>
+                                </select>
+                            </div>
                         </header>
                         <div class="agents-chat-thread__messages border-0"
                              id="agents-message-list"

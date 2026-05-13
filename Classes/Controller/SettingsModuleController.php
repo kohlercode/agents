@@ -88,9 +88,10 @@ final readonly class SettingsModuleController
                 'uid' => $providerUid,
                 'title' => (string)($postParams['title'] ?? 'My Provider'),
                 'provider_key' => (string)($postParams['providerKey'] ?? ''),
-                'api_key_ref' => (string)($postParams['apiKeyRef'] ?? ''),
+                'api_key' => (string)($postParams['apiKeyRef'] ?? ''),
                 'model_identifier' => (string)($postParams['modelIdentifier'] ?? ''),
                 'api_base_url' => (string)($postParams['apiBaseUrl'] ?? ''),
+                'is_active' => (int)($postParams['isActive'] ?? 0),
             ];
             $this->settingsService->saveProvider($provider);
         }
@@ -116,6 +117,7 @@ final readonly class SettingsModuleController
         $moduleTemplate->makeDocHeaderModuleMenu();
 
         $queryParams = $request->getQueryParams();
+        $postParams = $request->getParsedBody();
         $mode = (string)($queryParams['mode'] ?? 'add');
 
         if($mode === 'save'){

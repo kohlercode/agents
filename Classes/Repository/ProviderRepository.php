@@ -26,6 +26,24 @@ final readonly class ProviderRepository extends AbstractRepository
     }
 
     /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function listActive(): array
+    {
+        $queryBuilder = $this->createQueryBuilder(self::TABLE);
+
+        return $queryBuilder
+            ->select('*')
+            ->from(self::TABLE)
+            ->where(
+                $queryBuilder->expr()->eq('is_active', $queryBuilder->createNamedParameter(1, ParameterType::INTEGER))
+            )
+            ->orderBy('title', 'ASC')
+            ->executeQuery()
+            ->fetchAllAssociative();
+    }
+
+    /**
      * @return array<string, mixed>|null
      */
     public function findActive(): ?array
@@ -99,7 +117,6 @@ final readonly class ProviderRepository extends AbstractRepository
     public function setActive(int $uid): void
     {
         $connection = $this->getConnection(self::TABLE);
-        $connection->update(self::TABLE, ['is_active' => 0], ['is_active' => 1]);
         $connection->update(self::TABLE, ['is_active' => 1], ['uid' => $uid]);
     }
 

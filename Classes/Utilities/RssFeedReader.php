@@ -110,17 +110,19 @@ class RssFeedReader
             }
 
             // 1. Extract HTML Content
-            $contentEncoded = $this->getChildText($item, 'encoded');
+            $contentHtml = $this->getContentEncoded($item);
+            $contentText = $this->htmlToText($contentHtml);
 
             // 2. Extract Featured Image
-            $imageUrl = $this->extractImage($item, $contentEncoded);
+            $imageUrl = $this->extractImage($item, $contentHtml);
             $pubDate = $this->getChildText($item, 'pubDate');
 
             $feed['items'][] = [
                 'title' => $this->getChildText($item, 'title'),
                 'link' => $this->getChildText($item, 'link'),
                 'description' => $this->getChildText($item, 'description'),
-                'content' => trim($contentEncoded),
+                'content' => $contentText,
+                'content_html' => trim($contentHtml),
                 'image' => $imageUrl, // The intelligently extracted image
                 'pubDate' => $pubDate,
                 'timestamp' => strtotime($pubDate !== '' ? $pubDate : 'now'),
@@ -177,6 +179,45 @@ class RssFeedReader
     {
         $matches = $this->getChildElements($element, $name);
         return isset($matches[0]) ? trim((string)$matches[0]) : '';
+    }
+
+    private function getContentEncoded(SimpleXMLElement $item): string
+    {
+        $content = $this->getNamespacedChildText(
+            $item,
+            'http://purl.org/rss/1.0/modules/content/',
+            'encoded'
+        );
+
+        return $content !== '' ? $content : $this->getChildText($item, 'encoded');
+    }
+
+    private function getNamespacedChildText(SimpleXMLElement $element, string $namespace, string $name): string
+    {
+        $children = $element->children($namespace);
+        if (!isset($children->{$name})) {
+            return '';
+        }
+
+        return trim((string)$children->{$name});
+    }
+
+    private function htmlToText(string $html): string
+    {
+        if (trim($html) === '') {
+            return '';
+        }
+
+        $withLineBreaks = preg_replace(
+            '/<(br|\/p|\/div|\/h[1-6]|\/li|\/blockquote)\b[^>]*>/i',
+            "\n",
+            $html
+        );
+        $text = html_entity_decode(strip_tags((string)$withLineBreaks), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $text = preg_replace('/[ \t]+/', ' ', $text);
+        $text = preg_replace('/\n{3,}/', "\n\n", (string)$text);
+
+        return trim((string)$text);
     }
 
     /**

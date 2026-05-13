@@ -36,6 +36,12 @@ return [
         'target' => ChatApiController::class . '::setPinned',
         'inheritAccessFromModule' => 'agents_chat',
     ],
+    'agents_chat_provider' => [
+        'path' => '/agents/chat/provider',
+        'methods' => ['POST'],
+        'target' => ChatApiController::class . '::setProvider',
+        'inheritAccessFromModule' => 'agents_chat',
+    ],
     'agents_settings_get' => [
         'path' => '/agents/settings/get',
         'methods' => ['GET'],

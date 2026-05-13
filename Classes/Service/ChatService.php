@@ -35,11 +35,31 @@ final readonly class ChatService
         return $this->chatRepository->listByBackendUser($backendUserId);
     }
 
+    /**
+     * @return array<int, array{uid: int, title: string, provider_key: string, model_identifier: string}>
+     */
+    public function listActiveProviders(): array
+    {
+        $providers = [];
+        foreach ($this->providerRepository->listActive() as $provider) {
+            $providers[] = [
+                'uid' => (int)($provider['uid'] ?? 0),
+                'title' => (string)($provider['title'] ?? ''),
+                'provider_key' => (string)($provider['provider_key'] ?? ''),
+                'model_identifier' => (string)($provider['model_identifier'] ?? ''),
+            ];
+        }
+        return $providers;
+    }
+
     public function createChat(string $title, int $backendUserId): int
     {
         $settings = $this->settingRepository->getOrCreate();
         $providerUid = (int)($settings['active_provider_uid'] ?? 0);
-        $provider = $providerUid > 0 ? $this->providerRepository->getByUid($providerUid) : $this->providerRepository->findActive();
+        $provider = $providerUid > 0 ? $this->providerRepository->getByUid($providerUid) : null;
+        if ($provider === null || (int)($provider['is_active'] ?? 0) !== 1) {
+            $provider = $this->providerRepository->findActive();
+        }
         $providerUid = (int)($provider['uid'] ?? 0);
         $modelIdentifier = (string)($provider['model_identifier'] ?? '');
 
@@ -87,6 +107,30 @@ final readonly class ChatService
         $this->chatRepository->setPinned($chatUid, $backendUserId, $pinned, $sorting);
 
         return ['pinned' => $pinned, 'sorting' => $sorting];
+    }
+
+    /**
+     * @return array{providerUid: int, modelIdentifier: string}
+     */
+    public function setProvider(int $chatUid, int $backendUserId, int $providerUid): array
+    {
+        $chat = $this->chatRepository->getByUid($chatUid);
+        if ($chat === null || (int)($chat['created_by_be_user'] ?? 0) !== $backendUserId) {
+            throw new \RuntimeException('Chat not found or access denied.');
+        }
+
+        $provider = $this->providerRepository->getByUid($providerUid);
+        if ($provider === null || (int)($provider['is_active'] ?? 0) !== 1) {
+            throw new \RuntimeException('Selected provider is not active.');
+        }
+
+        $modelIdentifier = (string)($provider['model_identifier'] ?? '');
+        $this->chatRepository->setProvider($chatUid, $backendUserId, $providerUid, $modelIdentifier);
+
+        return [
+            'providerUid' => $providerUid,
+            'modelIdentifier' => $modelIdentifier,
+        ];
     }
 
     private function resolvePinnedChatsLimit(): int

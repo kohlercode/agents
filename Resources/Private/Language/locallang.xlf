@@ -33,6 +33,15 @@
             <trans-unit id="chat.pinned_heading">
                 <source>Pinned</source>
             </trans-unit>
+            <trans-unit id="chat.provider">
+                <source>Provider</source>
+            </trans-unit>
+            <trans-unit id="chat.provider_select">
+                <source>Select provider</source>
+            </trans-unit>
+            <trans-unit id="chat.no_active_providers">
+                <source>No active providers configured</source>
+            </trans-unit>
             <trans-unit id="chat.pinned_limit_reached">
                 <source>You have reached the maximum of %d pinned chats. Unpin one before pinning another.</source>
             </trans-unit>

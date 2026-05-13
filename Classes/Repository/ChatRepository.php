@@ -99,6 +99,25 @@ final readonly class ChatRepository extends AbstractRepository
         return $affected > 0;
     }
 
+    public function setProvider(int $chatUid, int $backendUserId, int $providerUid, string $modelIdentifier): bool
+    {
+        $connection = $this->getConnection(self::TABLE);
+        $affected = $connection->update(
+            self::TABLE,
+            [
+                'provider_uid' => $providerUid,
+                'model_identifier' => mb_substr($modelIdentifier, 0, 255),
+                'tstamp' => time(),
+            ],
+            [
+                'uid' => $chatUid,
+                'created_by_be_user' => $backendUserId,
+            ]
+        );
+
+        return $affected > 0;
+    }
+
     public function create(string $title, int $providerUid, string $modelIdentifier, int $backendUserId): int
     {
         $timestamp = time();

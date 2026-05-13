@@ -26,8 +26,10 @@ const formEl = document.querySelector('#agents-chat-form');
 const inputEl = document.querySelector('#agents-chat-input');
 const newChatEl = document.querySelector('#agents-new-chat');
 const threadTitleEl = document.querySelector('#agents-chat-thread-title');
+const providerSelectEl = document.querySelector('#agents-chat-provider');
 
 let activeChatId = 0;
+let chats = [];
 
 const getAjaxUrl = (routeName) => {
   const allUrls = window.TYPO3?.settings?.ajaxUrls || {};
@@ -78,6 +80,34 @@ const updateThreadTitle = (chats) => {
   threadTitleEl.textContent = active.title || `Chat #${active.uid}`;
 };
 
+const getActiveChat = () => chats.find((chat) => Number(chat.uid) === Number(activeChatId));
+
+const hasProviderOptions = () => {
+  if (!providerSelectEl) {
+    return false;
+  }
+  return Array.from(providerSelectEl.options).some((option) => option.value !== '');
+};
+
+const updateProviderSelect = () => {
+  if (!providerSelectEl) {
+    return;
+  }
+
+  const active = getActiveChat();
+  providerSelectEl.disabled = !active || !hasProviderOptions();
+
+  if (!active) {
+    providerSelectEl.value = '';
+    return;
+  }
+
+  const providerUid = String(Number(active.provider_uid || 0));
+  const hasMatchingOption = providerUid !== '0'
+    && Array.from(providerSelectEl.options).some((option) => option.value === providerUid);
+  providerSelectEl.value = hasMatchingOption ? providerUid : '';
+};
+
 const createChatRow = (chat) => {
   const isActive = Number(chat.uid) === Number(activeChatId);
   const isPinned = Number(chat.pinned) === 1;
@@ -113,7 +143,8 @@ const createChatRow = (chat) => {
   return row;
 };
 
-const renderChats = (chats) => {
+const renderChats = (nextChats) => {
+  chats = Array.isArray(nextChats) ? nextChats : [];
   listEl.innerHTML = '';
 
   const pinned = chats.filter((c) => Number(c.pinned) === 1);
@@ -135,6 +166,7 @@ const renderChats = (chats) => {
   others.forEach((chat) => listEl.appendChild(createChatRow(chat)));
 
   updateThreadTitle(chats);
+  updateProviderSelect();
 };
 
 const togglePin = async (chatUid, pinned) => {
@@ -145,6 +177,37 @@ const togglePin = async (chatUid, pinned) => {
     return;
   }
   await loadChats();
+};
+
+const setChatProvider = async (providerUid) => {
+  const chatUid = Number(activeChatId);
+  if (!chatUid || !providerUid) {
+    updateProviderSelect();
+    return;
+  }
+
+  if (providerSelectEl) {
+    providerSelectEl.disabled = true;
+  }
+
+  const result = await apiPost(root.dataset.routeSetProvider, { chatUid, providerUid });
+  if (!result.success) {
+    const message = result.error?.message || 'Could not update chat provider.';
+    window.alert(message);
+    updateProviderSelect();
+    return;
+  }
+
+  chats = chats.map((chat) => (
+    Number(chat.uid) === chatUid
+      ? {
+          ...chat,
+          provider_uid: result.data.providerUid,
+          model_identifier: result.data.modelIdentifier || chat.model_identifier || '',
+        }
+      : chat
+  ));
+  renderChats(chats);
 };
 
 const isSafeHttpUrl = (url) => {
@@ -452,6 +515,12 @@ newChatEl.addEventListener('click', async () => {
   activeChatId = Number(result.data.chatUid);
   await loadChats();
 });
+
+if (providerSelectEl) {
+  providerSelectEl.addEventListener('change', async () => {
+    await setChatProvider(Number(providerSelectEl.value));
+  });
+}
 
 formEl.addEventListener('submit', async (event) => {
   event.preventDefault();

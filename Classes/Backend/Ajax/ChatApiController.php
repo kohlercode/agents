@@ -114,4 +114,31 @@ final class ChatApiController extends AbstractApiController
             'sorting' => $result['sorting'],
         ]);
     }
+
+    public function setProvider(ServerRequestInterface $request): ResponseInterface
+    {
+        $backendUserId = $this->resolveBackendUserId();
+        if ($backendUserId <= 0) {
+            return $this->error('Backend user context missing.', 403);
+        }
+
+        $payload = $this->readJsonBody($request);
+        $chatUid = (int)($payload['chatUid'] ?? 0);
+        $providerUid = (int)($payload['providerUid'] ?? 0);
+        if ($chatUid <= 0 || $providerUid <= 0) {
+            return $this->error('Missing required fields "chatUid" and "providerUid".');
+        }
+
+        try {
+            $result = $this->chatService->setProvider($chatUid, $backendUserId, $providerUid);
+        } catch (\Throwable $exception) {
+            return $this->error($exception->getMessage(), 400);
+        }
+
+        return $this->success([
+            'chatUid' => $chatUid,
+            'providerUid' => $result['providerUid'],
+            'modelIdentifier' => $result['modelIdentifier'],
+        ]);
+    }
 }

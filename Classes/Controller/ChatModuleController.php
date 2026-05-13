@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kohlercode\Agents\Controller;
 
+use Kohlercode\Agents\Service\ChatService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Attribute\AsController;
@@ -14,6 +15,7 @@ final readonly class ChatModuleController
 {
     public function __construct(
         private ModuleTemplateFactory $moduleTemplateFactory,
+        private ChatService $chatService,
     ) {}
 
     public function handleRequest(ServerRequestInterface $request): ResponseInterface
@@ -30,7 +32,9 @@ final readonly class ChatModuleController
                     'listMessages' => 'agents_chat_messages',
                     'sendMessage' => 'agents_chat_send',
                     'setPinned' => 'agents_chat_pin',
+                    'setProvider' => 'agents_chat_provider',
                 ],
+                'activeProviders' => $this->chatService->listActiveProviders(),
             ])
             ->renderResponse('Chat/Index');
     }
