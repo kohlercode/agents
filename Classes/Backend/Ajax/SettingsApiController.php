@@ -6,6 +6,7 @@ namespace Kohlercode\Agents\Backend\Ajax;
 
 use Kohlercode\Agents\Repository\SettingRepository;
 use Kohlercode\Agents\Service\SettingsService;
+use Kohlercode\Agents\Tool\ToolMetadataInterface;
 use Kohlercode\Agents\Tool\ToolRegistry;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -27,6 +28,9 @@ final class SettingsApiController extends AbstractApiController
                 'name' => $tool->getName(),
                 'description' => $tool->getDescription(),
                 'parameters' => $tool->getInputSchema(),
+                'sourceExtension' => $tool instanceof ToolMetadataInterface
+                    ? $tool->getSourceExtensionKey()
+                    : 'unknown',
             ];
         }
 

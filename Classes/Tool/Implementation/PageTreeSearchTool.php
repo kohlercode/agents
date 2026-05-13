@@ -5,13 +5,19 @@ declare(strict_types=1);
 namespace Kohlercode\Agents\Tool\Implementation;
 
 use Kohlercode\Agents\Tool\ToolInterface;
+use Kohlercode\Agents\Tool\ToolMetadataInterface;
 use TYPO3\CMS\Backend\Tree\Repository\PageTreeRepository;
 
-final class PageTreeSearchTool implements ToolInterface
+final class PageTreeSearchTool implements ToolInterface, ToolMetadataInterface
 {
     public function __construct(
         private PageTreeRepository $pageTreeRepository,
     ) {}
+
+    public function getSourceExtensionKey(): string
+    {
+        return 'agents';
+    }
 
     public function getName(): string
     {

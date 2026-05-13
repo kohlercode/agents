@@ -34,6 +34,27 @@ Use constructor injection for TYPO3 and domain services; services are autowired 
 
 **Naming:** prefix tool names with your extension key (for example `my_shop_search_orders`) so they do not collide with core Agents tools or other extensions.
 
+### Optional source metadata
+
+Tools may also implement `Kohlercode\Agents\Tool\ToolMetadataInterface` so the settings module can show which extension provides the tool:
+
+```php
+use Kohlercode\Agents\Tool\ToolInterface;
+use Kohlercode\Agents\Tool\ToolMetadataInterface;
+
+final class FaqManagerTool implements ToolInterface, ToolMetadataInterface
+{
+    public function getSourceExtensionKey(): string
+    {
+        return 'agents_faq_tools';
+    }
+
+    // ToolInterface methods...
+}
+```
+
+This metadata is optional. Tools that only implement `ToolInterface` continue to work and are shown with source `unknown`.
+
 ### Readable results and media artifacts
 
 Tool results are not displayed as raw JSON in the chat. Return a short human-readable field so the assistant can summarize the outcome:

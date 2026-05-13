@@ -5,14 +5,20 @@ declare(strict_types=1);
 namespace Kohlercode\Agents\Tool\Implementation;
 
 use Kohlercode\Agents\Tool\ToolInterface;
+use Kohlercode\Agents\Tool\ToolMetadataInterface;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Site\SiteFinder;
 
-final readonly class SystemInfoTool implements ToolInterface
+final readonly class SystemInfoTool implements ToolInterface, ToolMetadataInterface
 {
     public function __construct(
         private SiteFinder $siteFinder,
     ) {}
+
+    public function getSourceExtensionKey(): string
+    {
+        return 'agents';
+    }
 
     public function getName(): string
     {

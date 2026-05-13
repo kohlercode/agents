@@ -54,7 +54,7 @@ const escapeHtml = (value) => String(value)
   .replace(/"/g, '&quot;');
 
 /**
- * @param {Array<{ name: string, description: string, parameters?: object }>} tools
+ * @param {Array<{ name: string, description: string, sourceExtension?: string, parameters?: object }>} tools
  */
 const renderToolsList = (tools) => {
   if (!toolsListEl) {
@@ -68,19 +68,23 @@ const renderToolsList = (tools) => {
   const items = tools.map((tool) => {
     const name = escapeHtml(tool.name || '');
     const description = escapeHtml(tool.description || '');
+    const sourceExtension = escapeHtml(tool.sourceExtension || 'unknown');
+    const sourceLabel = escapeHtml(toolsLabels.sourceExtension || 'Source:');
     const paramsJson = escapeHtml(JSON.stringify(tool.parameters ?? {}, null, 2));
     const paramsLabel = escapeHtml(toolsLabels.parameters || 'Parameters (JSON schema)');
 
     return `
       <div class="list-group-item list-group-item-action flex-column align-items-start py-3">
-        <div class="d-flex w-100 justify-content-between align-items-start gap-2 mb-1">
-          <code class="mb-0 h5 fw-bold">${name}</code>
+          <div class="d-flex w-100 align-items-start gap-2 mb-1">
+            <code class="mb-0 h5 fw-bold">${name}</code>
+            ${sourceLabel} <span class="badge">${sourceExtension}</span>
+          </div>
+          <p class="mb-2 text-body-secondary">${description}</p>
+          <details>
+            <summary class="text-muted user-select-none">${paramsLabel}</summary>
+            <pre class="mt-2 mb-0 p-2 bg-body-secondary rounded text-break">${paramsJson}</pre>
+          </details>
         </div>
-        <p class="mb-2 text-body-secondary">${description}</p>
-        <details>
-          <summary class="text-muted user-select-none">${paramsLabel}</summary>
-          <pre class="mt-2 mb-0 p-2 bg-body-secondary rounded text-break">${paramsJson}</pre>
-        </details>
       </div>
     `;
   });

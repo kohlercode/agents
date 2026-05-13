@@ -5,11 +5,17 @@ declare(strict_types=1);
 namespace Kohlercode\Agents\Tool\Implementation;
 
 use Kohlercode\Agents\Tool\ToolInterface;
+use Kohlercode\Agents\Tool\ToolMetadataInterface;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-final class SearchSystemLogTool implements ToolInterface
+final class SearchSystemLogTool implements ToolInterface, ToolMetadataInterface
 {
+    public function getSourceExtensionKey(): string
+    {
+        return 'agents';
+    }
+
     public function getName(): string
     {
         return 'search_system_log';

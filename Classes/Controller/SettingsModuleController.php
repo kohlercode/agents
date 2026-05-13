@@ -60,6 +60,13 @@ final readonly class SettingsModuleController
                 null,
                 $request
             ) ?? '',
+            'sourceExtension' => LocalizationUtility::translate(
+                'LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.availableTools.sourceExtension',
+                null,
+                null,
+                null,
+                $request
+            ) ?? '',
         ];
 
         return json_encode($labels, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_THROW_ON_ERROR);
