@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Kohlercode\Agents\Controller;
 
+use Kohlercode\Agents\Service\SettingsService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
-use Kohlercode\Agents\Service\SettingsService;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 #[AsController]
 final readonly class SettingsModuleController
@@ -36,8 +37,31 @@ final readonly class SettingsModuleController
                     'activateProvider' => 'agents_provider_activate',
                 ],
                 'providers' => $providers,
+                'toolsListLabelsJson' => $this->encodeToolsListLabelsForDataAttribute($request),
             ])
             ->renderResponse('Settings/Index');
+    }
+
+    private function encodeToolsListLabelsForDataAttribute(ServerRequestInterface $request): string
+    {
+        $labels = [
+            'empty' => LocalizationUtility::translate(
+                'LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.availableTools.empty',
+                null,
+                null,
+                null,
+                $request
+            ) ?? '',
+            'parameters' => LocalizationUtility::translate(
+                'LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.availableTools.parameters',
+                null,
+                null,
+                null,
+                $request
+            ) ?? '',
+        ];
+
+        return json_encode($labels, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_THROW_ON_ERROR);
     }
 
     public function editProvider(ServerRequestInterface $request): ResponseInterface

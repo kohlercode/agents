@@ -6,6 +6,7 @@ namespace Kohlercode\Agents\Backend\Ajax;
 
 use Kohlercode\Agents\Repository\SettingRepository;
 use Kohlercode\Agents\Service\SettingsService;
+use Kohlercode\Agents\Tool\ToolRegistry;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Attribute\AsController;
@@ -15,12 +16,23 @@ final class SettingsApiController extends AbstractApiController
 {
     public function __construct(
         private SettingsService $settingsService,
+        private ToolRegistry $toolRegistry,
     ) {}
 
     public function getSettings(ServerRequestInterface $request): ResponseInterface
     {
+        $tools = [];
+        foreach ($this->toolRegistry->all() as $tool) {
+            $tools[] = [
+                'name' => $tool->getName(),
+                'description' => $tool->getDescription(),
+                'parameters' => $tool->getInputSchema(),
+            ];
+        }
+
         return $this->success([
             'settings' => $this->settingsService->getSettings(),
+            'tools' => $tools,
         ]);
     }
 

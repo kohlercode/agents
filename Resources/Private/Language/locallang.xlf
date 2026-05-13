@@ -57,6 +57,18 @@
             <trans-unit id="settings.save">
                 <source>Save settings</source>
             </trans-unit>
+            <trans-unit id="settings.availableTools">
+                <source>Available tools</source>
+            </trans-unit>
+            <trans-unit id="settings.availableTools.help">
+                <source>These tools are registered in the system (including from other extensions) and may be offered to the assistant during chat.</source>
+            </trans-unit>
+            <trans-unit id="settings.availableTools.empty">
+                <source>No tools are registered.</source>
+            </trans-unit>
+            <trans-unit id="settings.availableTools.parameters">
+                <source>Parameters (JSON schema)</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -16,7 +16,8 @@
          data-route-save-settings="{ajaxRoutes.saveSettings}"
          data-route-list-providers="{ajaxRoutes.listProviders}"
          data-route-save-provider="{ajaxRoutes.saveProvider}"
-         data-route-activate-provider="{ajaxRoutes.activateProvider}">
+         data-route-activate-provider="{ajaxRoutes.activateProvider}"
+         data-tools-labels="{toolsListLabelsJson -> f:format.raw()}">
         <h1 class="mb-4"><f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.title" /></h1>
         <div class="row g-3">
             <div class="col-12 col-xl-6">
@@ -84,6 +85,21 @@
                                 </div>
                             </f:for>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-3 mt-1">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0"><f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.availableTools" /></h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-3">
+                            <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.availableTools.help" />
+                        </p>
+                        <div id="agents-tools-list" class="agents-settings-tools-list"></div>
                     </div>
                 </div>
             </div>
