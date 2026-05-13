@@ -28,7 +28,6 @@ final class CreatePageTool implements ToolInterface
                 'parentPid' => ['type' => 'integer', 'minimum' => 1],
                 'title' => ['type' => 'string', 'minLength' => 1, 'maxLength' => 255],
                 'doktype' => ['type' => 'integer', 'minimum' => 1],
-                'dryRun' => ['type' => 'boolean'],
             ],
             'required' => ['parentPid', 'title'],
             'additionalProperties' => false,
@@ -40,20 +39,9 @@ final class CreatePageTool implements ToolInterface
         $parentPid = (int)($arguments['parentPid'] ?? 0);
         $title = trim((string)($arguments['title'] ?? ''));
         $doktype = (int)($arguments['doktype'] ?? 1);
-        $dryRun = (bool)($arguments['dryRun'] ?? true);
 
         if ($parentPid <= 0 || $title === '') {
             throw new \InvalidArgumentException('Tool arguments parentPid and title are required.');
-        }
-
-        if ($dryRun) {
-            return [
-                'dryRun' => true,
-                'plannedAction' => 'create_page',
-                'parentPid' => $parentPid,
-                'title' => $title,
-                'doktype' => $doktype,
-            ];
         }
 
         $newId = 'NEW' . md5((string)microtime(true));
@@ -77,7 +65,6 @@ final class CreatePageTool implements ToolInterface
         }
 
         return [
-            'dryRun' => false,
             'createdPageUid' => $createdPageUid,
             'createdByBackendUser' => $backendUserId,
         ];
