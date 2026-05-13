@@ -75,21 +75,20 @@ const renderToolsList = (tools) => {
 
     return `
       <div class="list-group-item list-group-item-action flex-column align-items-start py-3">
-          <div class="d-flex w-100 align-items-start gap-2 mb-1">
-            <code class="mb-0 h5 fw-bold">${name}</code>
+          <div class="float-end">
             ${sourceLabel} <span class="badge">${sourceExtension}</span>
           </div>
+          <code class="mb-0 h5 fw-bold">${name}</code>
           <p class="mb-2 text-body-secondary">${description}</p>
           <details>
             <summary class="text-muted user-select-none">${paramsLabel}</summary>
-            <pre class="mt-2 mb-0 p-2 bg-body-secondary rounded text-break">${paramsJson}</pre>
+            <pre class="mt-2 mb-0 p-2 text-break">${paramsJson}</pre>
           </details>
-        </div>
       </div>
     `;
   });
 
-  toolsListEl.innerHTML = `<div class="list-group list-group-flush border rounded">${items.join('')}</div>`;
+  toolsListEl.innerHTML = `<div class="list-group list-group-flush rounded">${items.join('')}</div>`;
 };
 
 const loadSettings = async () => {
