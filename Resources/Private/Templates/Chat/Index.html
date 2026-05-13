@@ -1,8 +1,23 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
-<f:layout name="Module" />
+<f:layout name="Agents" />
 <f:section name="Content">
     <f:asset.css identifier="agents-chat-styles" href="EXT:agents/Resources/Public/Css/agents-chat.css" />
     <f:asset.script identifier="agents-chat-module" src="EXT:agents/Resources/Public/JavaScript/Modules/agents-chat.js" type="module" />
+    <button type="button" class="btn btn-default" id="save-bookmark">
+        Add to Bookmarks
+    </button>
+    <f:asset.script identifier="agents-chat-bookmark" type="module">
+        document.getElementById('save-bookmark').addEventListener('click', function() {
+            fetch('{bookmarkAjaxUrl}')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Optionally trigger a TYPO3 notification
+                        top.TYPO3.Notification.success('Success', 'Bookmark added');
+                    }
+                });
+        });
+    </f:asset.script>
     <div class="agents-chat-module"
          id="agents-chat-module"
          data-route-list-chats="{ajaxRoutes.listChats}"
