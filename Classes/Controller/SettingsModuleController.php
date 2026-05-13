@@ -93,6 +93,7 @@ final readonly class SettingsModuleController
                 'api_key_ref' => (string)($postParams['apiKeyRef'] ?? ''),
                 'model_identifier' => (string)($postParams['modelIdentifier'] ?? ''),
                 'api_base_url' => (string)($postParams['apiBaseUrl'] ?? ''),
+                'is_active' => (string)($postParams['isActive'] ?? ''),
             ];
             $this->settingsService->addProvider($provider);
         }

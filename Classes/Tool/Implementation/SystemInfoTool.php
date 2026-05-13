@@ -28,7 +28,7 @@ final readonly class SystemInfoTool implements ToolInterface
     {
         return [
             'type' => 'object',
-            'properties' => [],
+            'properties' => (object)[],
             'additionalProperties' => false,
         ];
     }

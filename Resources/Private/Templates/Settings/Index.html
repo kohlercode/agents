@@ -17,7 +17,7 @@
          data-route-list-providers="{ajaxRoutes.listProviders}"
          data-route-save-provider="{ajaxRoutes.saveProvider}"
          data-route-activate-provider="{ajaxRoutes.activateProvider}">
-        <h1><f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.title" /></h1>
+        <h1 class="mb-4"><f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.title" /></h1>
         <div class="row g-3">
             <div class="col-12 col-xl-6">
                 <div class="card">
@@ -27,12 +27,6 @@
                                 <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.systemPrompt" />
                             </label>
                             <textarea id="agents-system-prompt" class="form-control" rows="12"></textarea>
-                        </div>
-                        <div class="form-floating mb-4">
-                            <label for="agents-backend-module-position" class="h4 mb-3">
-                                <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.backendModulePosition" />
-                            </label>
-                            <input id="agents-backend-module-position" class="form-control" type="text" placeholder="e.g. after:media" />
                         </div>
                         <div class="form-floating mb-4">
                             <label for="agents-pinned-chats-limit" class="h4 mb-3">
@@ -45,11 +39,18 @@
                                    max="999"
                                    step="1"
                                    placeholder="20" />
-                            <div class="form-text">
+                            <div class="form-text text-muted p-1">
                                 <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.pinnedChatsLimit.help" />
                             </div>
                         </div>
+                        <div class="form-floating mb-4">
+                            <label for="agents-backend-module-position" class="h4 mb-3">
+                                <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.backendModulePosition" />
+                            </label>
+                            <input id="agents-backend-module-position" class="form-control" type="text" placeholder="e.g. after:media" />
+                        </div>
                         <button id="agents-save-settings" type="button" class="btn btn-primary mt-3">
+                            <core:icon identifier="actions-save" size="small" />
                             <f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.save" />
                         </button>
                     </div>
@@ -59,7 +60,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h3><f:translate key="LLL:EXT:agents/Resources/Private/Language/locallang.xlf:settings.providers" /></h3>
-                        <a href="{be:moduleLink(route: 'agents_settings.addProviderForm')}" class="btn btn-sm btn-primary">New provider</a>
+                        <a href="{be:moduleLink(route: 'agents_settings.addProviderForm')}" class="btn btn-sm btn-primary"><core:icon identifier="actions-plus" size="small" /> New provider</a>
                     </div>
                     <div class="card-body">
                         <div id="agents-provider-list">
@@ -67,13 +68,17 @@
                                 <div class="rounded p-2 mb-2">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <p class="fw-bold mb-0">{provider.title}</p>
+                                            <p class="fw-bold mb-0 {f:if(condition: '{provider.is_active} == 1', then: 'text-success')}">{provider.title}</p>
                                             <div class="text-muted">{provider.provider_key} / {provider.model_identifier}</div>
                                         </div>
                                         <div>   
-                                        <a href="{be:moduleLink(route: 'agents_settings.editProvider', arguments: {providerUid: provider.uid})}"
-                                           class="btn btn-sm btn-primary">Edit</a>
-                                        <button class="btn btn-sm btn-primary">Delete</button>
+                                            <a href="{be:moduleLink(route: 'agents_settings.editProvider', arguments: {providerUid: provider.uid})}"
+                                            class="btn btn-sm btn-default">
+                                            <core:icon identifier="actions-pencil" size="small" />
+                                        </a>
+                                            <button class="btn btn-sm btn-default">
+                                                <core:icon identifier="actions-delete" size="small" />
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

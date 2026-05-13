@@ -9,9 +9,11 @@
         src="EXT:agents/Resources/Public/JavaScript/Modules/agents-settings.js"
         type="module"
     />
-    
+
     <header class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="mb-0">{provider.title}</h1>
+        <h1 class="mb-0">
+            {provider.title} {f:if(condition: '{provider.is_active} == 1', then: '(active)')}
+        </h1>
         <small class="text-muted mb-3 text-uppercase">{provider.provider_key} / {provider.model_identifier}</small>
     </header>
 

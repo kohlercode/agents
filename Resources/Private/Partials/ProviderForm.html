@@ -6,6 +6,15 @@
 
     <input type="hidden" name="uid" value="{provider.uid}" />
 
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <label for="provider-is-active">
+            <input type="checkbox" value="1" name="isActive" id="provider-is-active" {f:if(condition: '{provider.is_active} == 1', then: 'checked')}> Is active
+        </label>
+        <a href="{be:moduleLink(route: 'agents_settings')}" type="button" class="btn btn-default">
+            <core:icon identifier="actions-arrow-up" size="small" /> Back
+        </a>
+    </div>
+
     <div class="form-floating mb-3">
         <label for="provider-title">Title</label>
         <input type="text" class="form-control" id="provider-title" name="title" value="{provider.title}" required />
@@ -13,14 +22,13 @@
 
     <div class="form-floating mb-3">
         <label for="provider-provider-key">Provider key</label>
-        <select class="form-control" id="provider-provider-key" name="providerKey" required>
+        <select class="form-select" id="provider-provider-key" name="providerKey" required>
             <option value="">-- Select provider key --</option>
-            <option value="google" {f:if(condition: '{provider.provider_key} == \'google\'', then: 'selected')}>Google</option>
-            <option value="deepseek" {f:if(condition: '{provider.provider_key} == \'deepseek\'', then: 'selected')}>DeepSeek</option>
-            <option value="openrouter" {f:if(condition: '{provider.provider_key} == \'openrouter\'', then: 'selected')}>OpenRouter</option>
-            <option value="openai" {f:if(condition: '{provider.provider_key} == \'openai\'', then: 'selected')}>OpenAI</option>
-            <option value="anthropic" {f:if(condition: '{provider.provider_key} == \'anthropic\'', then: 'selected')}>Anthropic</option>
-            <option value="azure" {f:if(condition: '{provider.provider_key} == \'azure\'', then: 'selected')}>Azure</option>
+            <option value="google" {f:if(condition: '{provider.provider_key} == \'google\'', then: 'selected')}>Google (google)</option>
+            <option value="deepseek" {f:if(condition: '{provider.provider_key} == \'deepseek\'', then: 'selected')}>DeepSeek (deepseek)</option>
+            <option value="openrouter" {f:if(condition: '{provider.provider_key} == \'openrouter\'', then: 'selected')}>OpenRouter (openrouter)</option>
+            <option value="openai" {f:if(condition: '{provider.provider_key} == \'openai\'', then: 'selected')}>OpenAI (openai)</option>
+            <option value="anthropic" {f:if(condition: '{provider.provider_key} == \'anthropic\'', then: 'selected')}>Anthropic (anthropic)</option>
         </select>
     </div>
 
@@ -39,7 +47,19 @@
         <input type="text" class="form-control" id="provider-api-base-url" name="apiBaseUrl" value="{provider.api_base_url}" />
     </div>
 
-    <button type="submit" class="btn btn-primary">Save Provider</button>
+    <div class="d-flex gap-2 justify-content-between">
+        <div>
+            <a href="{be:moduleLink(route: 'agents_settings')}" type="button" class="btn btn-default">
+                <core:icon identifier="actions-arrow-up" size="small" /> Back
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <core:icon identifier="actions-save" size="small" /> Save
+            </button>
+        </div>
+        <button type="button" class="btn btn-danger">
+            <core:icon identifier="actions-delete" size="small" /> Delete
+        </button>
+    </div>
 
 </form>
 </html>

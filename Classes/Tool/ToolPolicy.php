@@ -12,6 +12,7 @@ final class ToolPolicy
     private array $allowlist = [
         'system_info' => true,
         'create_page' => true,
+        'get_page_by_uid' => true,
     ];
 
     public function isAllowed(string $toolName): bool
