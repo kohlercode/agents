@@ -334,10 +334,14 @@
     ul,
     ol,
     blockquote,
-    pre {
+    pre,
+    .agents-chat-message__table-scroll {
         margin-block: 0 0.75rem;
     }
 
+    h1,
+    h2,
+    h3,
     h4,
     h5,
     h6 {
@@ -369,6 +373,40 @@
         border-inline-start: 3px solid var(--agents-border-subtle);
         color: var(--agents-text-muted);
         padding-inline-start: 0.75rem;
+    }
+
+    hr {
+        border: 0;
+        border-top: 1px solid var(--agents-border-subtle);
+        margin-block: 1rem;
+    }
+
+    .agents-chat-message__table-scroll {
+        max-width: 100%;
+        overflow-x: auto;
+        border-radius: 0.5rem;
+    }
+
+    table {
+        width: max-content;
+        min-width: 100%;
+        border-collapse: collapse;
+        font-size: 0.875rem;
+        background-color: color-mix(in srgb, currentColor 3%, transparent);
+    }
+
+    th,
+    td {
+        border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+        padding: 0.4rem 0.55rem;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    th {
+        background-color: color-mix(in srgb, currentColor 8%, transparent);
+        font-weight: 700;
+        white-space: nowrap;
     }
 }
 

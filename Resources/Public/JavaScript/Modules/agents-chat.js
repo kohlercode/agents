@@ -228,151 +228,75 @@ const getAllowedIframeOrigins = () => {
   return new Set([window.location.origin, ...configuredOrigins]);
 };
 
-const appendInlineMarkdown = (target, text) => {
-  const source = String(text || '');
-  const inlinePattern = /(`([^`]+)`|\*\*([^*]+)\*\*|\*([^*]+)\*|\[([^\]]+)\]\(([^)\s]+)\))/g;
-  let lastIndex = 0;
-  let match;
+const markdownParser = window.markdownit?.({
+  html: false,
+  linkify: true,
+  typographer: true,
+  breaks: true,
+});
 
-  while ((match = inlinePattern.exec(source)) !== null) {
-    if (match.index > lastIndex) {
-      target.appendChild(document.createTextNode(source.slice(lastIndex, match.index)));
+if (markdownParser) {
+  const defaultLinkOpen = markdownParser.renderer.rules.link_open
+    || ((tokens, index, options, env, self) => self.renderToken(tokens, index, options));
+
+  markdownParser.renderer.rules.link_open = (tokens, index, options, env, self) => {
+    const token = tokens[index];
+    const hrefIndex = token.attrIndex('href');
+
+    if (hrefIndex >= 0 && isSafeHttpUrl(token.attrs[hrefIndex][1])) {
+      token.attrs[hrefIndex][1] = new URL(token.attrs[hrefIndex][1], window.location.origin).toString();
+      token.attrSet('target', '_blank');
+      token.attrSet('rel', 'noopener noreferrer nofollow');
+    } else if (hrefIndex >= 0) {
+      token.attrs.splice(hrefIndex, 1);
     }
 
-    if (match[2]) {
-      const code = document.createElement('code');
-      code.textContent = match[2];
-      target.appendChild(code);
-    } else if (match[3]) {
-      const strong = document.createElement('strong');
-      strong.textContent = match[3];
-      target.appendChild(strong);
-    } else if (match[4]) {
-      const emphasis = document.createElement('em');
-      emphasis.textContent = match[4];
-      target.appendChild(emphasis);
-    } else if (match[5] && match[6] && isSafeHttpUrl(match[6])) {
-      const link = document.createElement('a');
-      link.href = new URL(match[6], window.location.origin).toString();
-      link.textContent = match[5];
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer nofollow';
-      target.appendChild(link);
-    } else {
-      target.appendChild(document.createTextNode(match[0]));
+    return defaultLinkOpen(tokens, index, options, env, self);
+  };
+}
+
+const decorateRenderedMarkdown = (container) => {
+  container.querySelectorAll('a[href]').forEach((link) => {
+    if (!isSafeHttpUrl(link.href)) {
+      link.removeAttribute('href');
+      return;
     }
 
-    lastIndex = inlinePattern.lastIndex;
-  }
+    link.href = new URL(link.href, window.location.origin).toString();
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer nofollow';
+  });
 
-  if (lastIndex < source.length) {
-    target.appendChild(document.createTextNode(source.slice(lastIndex)));
-  }
+  container.querySelectorAll('table').forEach((table) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'agents-chat-message__table-scroll';
+    table.parentNode.insertBefore(wrapper, table);
+    wrapper.appendChild(table);
+  });
 };
-
-const isMarkdownBlockStart = (line) => (
-  /^```/.test(line)
-  || /^#{1,3}\s+/.test(line)
-  || /^>\s?/.test(line)
-  || /^(\s*)([-*]|\d+\.)\s+/.test(line)
-);
 
 const renderMarkdown = (markdown) => {
   const fragment = document.createDocumentFragment();
-  const lines = String(markdown || '').replace(/\r\n?/g, '\n').split('\n');
+  const source = String(markdown || '');
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    if (line.trim() === '') {
-      continue;
-    }
-
-    const fenceMatch = line.match(/^```\s*([a-z0-9_-]+)?\s*$/i);
-    if (fenceMatch) {
-      const codeLines = [];
-      i++;
-      while (i < lines.length && !/^```/.test(lines[i])) {
-        codeLines.push(lines[i]);
-        i++;
-      }
-
-      const pre = document.createElement('pre');
-      const code = document.createElement('code');
-      if (fenceMatch[1]) {
-        code.dataset.language = fenceMatch[1].toLowerCase();
-      }
-      code.textContent = codeLines.join('\n');
-      pre.appendChild(code);
-      fragment.appendChild(pre);
-      continue;
-    }
-
-    const headingMatch = line.match(/^(#{1,3})\s+(.+)$/);
-    if (headingMatch) {
-      const heading = document.createElement(`h${Math.min(headingMatch[1].length + 3, 6)}`);
-      appendInlineMarkdown(heading, headingMatch[2]);
-      fragment.appendChild(heading);
-      continue;
-    }
-
-    const quoteMatch = line.match(/^>\s?(.*)$/);
-    if (quoteMatch) {
-      const blockquote = document.createElement('blockquote');
-      const quoteLines = [quoteMatch[1]];
-      while (i + 1 < lines.length && /^>\s?/.test(lines[i + 1])) {
-        i++;
-        quoteLines.push(lines[i].replace(/^>\s?/, ''));
-      }
-      appendInlineMarkdown(blockquote, quoteLines.join('\n'));
-      fragment.appendChild(blockquote);
-      continue;
-    }
-
-    const listMatch = line.match(/^(\s*)([-*]|\d+\.)\s+(.+)$/);
-    if (listMatch) {
-      const ordered = /\d+\./.test(listMatch[2]);
-      const list = document.createElement(ordered ? 'ol' : 'ul');
-      let currentLine = line;
-
-      while (currentLine) {
-        const itemMatch = currentLine.match(/^(\s*)([-*]|\d+\.)\s+(.+)$/);
-        if (!itemMatch || /\d+\./.test(itemMatch[2]) !== ordered) {
-          break;
-        }
-
-        const item = document.createElement('li');
-        appendInlineMarkdown(item, itemMatch[3]);
-        list.appendChild(item);
-
-        if (i + 1 >= lines.length) {
-          break;
-        }
-        const nextLine = lines[i + 1];
-        if (nextLine.trim() === '') {
-          break;
-        }
-        const nextItem = nextLine.match(/^(\s*)([-*]|\d+\.)\s+(.+)$/);
-        if (!nextItem || /\d+\./.test(nextItem[2]) !== ordered) {
-          break;
-        }
-        i++;
-        currentLine = nextLine;
-      }
-
-      fragment.appendChild(list);
-      continue;
-    }
-
-    const paragraphLines = [line.trim()];
-    while (i + 1 < lines.length && lines[i + 1].trim() !== '' && !isMarkdownBlockStart(lines[i + 1])) {
-      i++;
-      paragraphLines.push(lines[i].trim());
-    }
-
+  if (!markdownParser || !window.DOMPurify) {
     const paragraph = document.createElement('p');
-    appendInlineMarkdown(paragraph, paragraphLines.join(' '));
+    paragraph.textContent = source;
     fragment.appendChild(paragraph);
+    return fragment;
   }
+
+  const template = document.createElement('template');
+  template.innerHTML = window.DOMPurify.sanitize(markdownParser.render(source), {
+    ALLOWED_TAGS: [
+      'a', 'blockquote', 'br', 'code', 'del', 'em', 'h1', 'h2', 'h3',
+      'h4', 'h5', 'h6', 'hr', 'li', 'ol', 'p', 'pre', 's', 'strong',
+      'table', 'tbody', 'td', 'th', 'thead', 'tr', 'ul',
+    ],
+    ALLOWED_ATTR: ['class', 'colspan', 'href', 'rel', 'rowspan', 'scope', 'target', 'title'],
+  });
+  decorateRenderedMarkdown(template.content);
+  fragment.appendChild(template.content);
 
   return fragment;
 };
