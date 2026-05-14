@@ -10,7 +10,7 @@ Tools can read TYPO3 data, create or translate records, fetch external informati
 | -------- | -------- | -------- |
 | `system_info` | Returns TYPO3 system and site information. | Helps the assistant understand the TYPO3 version, configured sites, site roots, and available site languages. |
 | `get_page_by_uid` | Returns a single TYPO3 page by its uid. | Reads page data for inspection, validation, or follow-up tasks. |
-| `page_tree_search` | Searches the page tree of a given site for a specific page. | Finds pages by search term and returns the matching page structure with parent pages. |
+| `page_tree_search` | Searches the page tree below a given root page uid. | Finds pages by search term and returns the filtered page tree structure. |
 | `create_page` | Creates a basic TYPO3 page below a parent page id. | Adds a new page record with title and optional SEO/Open Graph fields. |
 | `get_page_translations` | Returns all existing translations of a TYPO3 page. | Checks which language versions already exist for a page before creating new translations. |
 | `translate_page` | Translates an existing TYPO3 page into a target language. | Validates site language availability, checks existing translations, and can localize content elements as well. |
@@ -54,14 +54,14 @@ Use this tool when the assistant needs to inspect a known page record before dec
 
 ### `page_tree_search`
 
-Searches a page tree for a page matching a search term.
+Searches the page tree below a root page uid for pages matching a search term.
 
 | Argument | Required | Description |
 | -------- | -------- | -------- |
-| `site_uid` | yes | Root page id / site uid used as the search root. |
+| `site_uid` | yes | Root page id / mount point page uid used as the search root. |
 | `search_term` | yes | Search term, between 1 and 255 characters. |
 
-Use this tool when the assistant knows a site but does not yet know the target page uid.
+Use this tool when the assistant knows the root page of a site but does not yet know the target page uid.
 
 ### `create_page`
 
