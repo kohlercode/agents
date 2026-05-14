@@ -32,7 +32,7 @@
 
 @media (min-width: 992px) {
     .agents-chat-panel--thread {
-        min-height: min(70vh, 44rem);
+        min-height: min(87vh, 44rem);
     }
 }
 
@@ -199,7 +199,7 @@
     flex-direction: column;
     flex: 1 1 auto;
     min-height: 0; // allow nested scroll region in flex column
-    max-height: 78vh;
+    max-height: 87vh;
     overflow-y: auto;
     scroll-behavior: smooth;
 }
