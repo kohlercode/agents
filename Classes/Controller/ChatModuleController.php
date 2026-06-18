@@ -23,10 +23,11 @@ final readonly class ChatModuleController
         $moduleTemplate = $this->moduleTemplateFactory->create($request);
         $moduleTemplate->setTitle('Agents Chat');
         $moduleTemplate->makeDocHeaderModuleMenu();
-        $moduleTemplate->getDocHeaderComponent()->setShortcutContext(
-            routeIdentifier: 'agents_chat',
-            displayName: 'Agents Chat',
-        );
+        $buttonBar = $moduleTemplate->getDocHeaderComponent()->getButtonBar();
+        $shortcutButton = $buttonBar->makeShortcutButton()
+            ->setRouteIdentifier('agents_chat')
+            ->setDisplayName('Agents Chat');
+        $buttonBar->addButton($shortcutButton);
 
         return $moduleTemplate
             ->assignMultiple([
