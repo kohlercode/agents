@@ -4,22 +4,6 @@ if (!root) {
   throw new Error('Agents chat module root element not found.');
 }
 
-document.getElementById('save-bookmark').addEventListener('click', function() {
-  console.log(TYPO3.settings.ajaxUrls);
-  const bookmarkAjaxUrl = TYPO3.settings.ajaxUrls.bookmark_create;
-  fetch(bookmarkAjaxUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Requested-With': 'XMLHttpRequest',
-    },
-    body: JSON.stringify({
-      title: 'Agents Chat',
-      url: window.location.href,
-    }),
-  })
-});
-
 const listEl = document.querySelector('#agents-chat-list');
 const messagesEl = document.querySelector('#agents-message-list');
 const formEl = document.querySelector('#agents-chat-form');

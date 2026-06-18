@@ -6,9 +6,9 @@
   "license": "GPL-2.0-or-later",
   "require": {
     "php": "^8.2",
-    "typo3/cms-backend": "^14.3",
-    "typo3/cms-core": "^14.3",
-    "typo3/cms-fluid": "^14.3"
+    "typo3/cms-backend": "^13.4",
+    "typo3/cms-core": "^13.4",
+    "typo3/cms-fluid": "^13.4"
   },
   "keywords": [
       "TYPO3",

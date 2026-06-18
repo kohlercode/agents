@@ -23,6 +23,10 @@ final readonly class ChatModuleController
         $moduleTemplate = $this->moduleTemplateFactory->create($request);
         $moduleTemplate->setTitle('Agents Chat');
         $moduleTemplate->makeDocHeaderModuleMenu();
+        $moduleTemplate->getDocHeaderComponent()->setShortcutContext(
+            routeIdentifier: 'agents_chat',
+            displayName: 'Agents Chat',
+        );
 
         return $moduleTemplate
             ->assignMultiple([
